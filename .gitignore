@@ -68,3 +68,4 @@ local.properties
 .idea
 '.idea' 
 'local.properties' 
+'.gradle' 
