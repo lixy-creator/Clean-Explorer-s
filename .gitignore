@@ -65,4 +65,5 @@ Thumbs.db
 .externalNativeBuild
 .cxx
 local.properties
-
+.idea
+'.idea' 
