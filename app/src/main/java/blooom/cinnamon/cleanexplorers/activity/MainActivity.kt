@@ -1,11 +1,18 @@
 package blooom.cinnamon.cleanexplorers.activity
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import blooom.cinnamon.cleanexplorers.R
 import blooom.cinnamon.cleanexplorers.manager.CleanFragmentManager
+import blooom.cinnamon.cleanexplorers.model.User
 import com.facebook.CallbackManager
+import com.google.gson.Gson
+
+
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -15,7 +22,18 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        CleanFragmentManager.displayLogin(this)
+
+        val sharedpreferences :SharedPreferences= getSharedPreferences("data", Context.MODE_PRIVATE)
+       val userJson : String? =sharedpreferences.getString("user", null)
+        if (userJson==null) {
+            CleanFragmentManager.displayLogin(this)
+        }
+        else {
+            val gson = Gson()
+            val user: User = gson.fromJson(userJson, User::class.java)
+            CleanFragmentManager.displayHome(this, user)
+
+        }
 
         callbackManager = CallbackManager.Factory.create()
 

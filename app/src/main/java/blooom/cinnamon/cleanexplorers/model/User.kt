@@ -8,23 +8,23 @@ import android.os.Parcelable
  **/
 open class User : Parcelable {
     var id: String?
-     var firstName: String?
-    var lastName: String?
+     var pseudo: String?
     var email: String?
+    var token: String?
 
 
-    constructor(id: String?, firstName: String?, lastName: String?, email: String?) {
+    constructor(id: String?, firstName: String?, email: String?, token:String?) {
         this.id = id
-        this.firstName = firstName
-        this.lastName = lastName
+        this.pseudo = firstName
         this.email = email
+        this.token=token
     }
 
     protected constructor(parcel: Parcel) {
         this.id = parcel.readString()
-        this.firstName = parcel.readString()
-        this.lastName = parcel.readString()
+        this.pseudo = parcel.readString()
         this.email = parcel.readString()
+        this.token=parcel.readString()
 
 
     }

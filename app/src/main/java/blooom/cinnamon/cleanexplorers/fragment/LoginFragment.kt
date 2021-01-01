@@ -1,6 +1,8 @@
 package blooom.cinnamon.cleanexplorers.fragment
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,7 +17,10 @@ import blooom.cinnamon.cleanexplorers.model.User
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
-import com.facebook.*
+import com.facebook.AccessToken
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.GraphRequest
 import com.facebook.login.LoginResult
 import com.facebook.login.widget.LoginButton
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -23,6 +28,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.google.gson.Gson
 import org.json.JSONException
 
 
@@ -38,8 +44,7 @@ class LoginFragment : Fragment() {
     @BindView(R.id.sign_facebook)
     lateinit var btnFacebook: LoginButton
 
-    // private lateinit var callbackManager: CallbackManager
-
+    private lateinit var sharedpreferences: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,6 +55,9 @@ class LoginFragment : Fragment() {
         ButterKnife.bind(this, view)
 
         val activity = activity as MainActivity
+         sharedpreferences =
+            activity.getSharedPreferences("data", Context.MODE_PRIVATE)
+
         btnFacebook.setReadPermissions(listOf("email", "public_profile"))
 
         btnFacebook.registerCallback(
@@ -57,9 +65,6 @@ class LoginFragment : Fragment() {
             object : FacebookCallback<LoginResult> {
                 override fun onSuccess(loginResult: LoginResult) {
                     // App code
-                    val profile: Profile? = Profile.getCurrentProfile()
-
-
                     getUserProfile(loginResult.accessToken)
                 }
 
@@ -107,7 +112,9 @@ class LoginFragment : Fragment() {
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
             val account = completedTask.getResult(ApiException::class.java)
-            val user = User(account!!.id, account.givenName, account.familyName, account.email)
+
+            val user = User(account!!.id, account.givenName, account.email, account.idToken)
+            addSharePreference(user)
             CleanFragmentManager.displayHome(activity as MainActivity, user)
         } catch (e: ApiException) {
             // The ApiException status code indicates the detailed failure reason.
@@ -127,11 +134,11 @@ class LoginFragment : Fragment() {
         ) { obj, _ ->
             Log.d("TAG", obj.toString())
             try {
-                val first_name: String = obj.getString("first_name")
-                val last_name : String= obj.getString("last_name")
+                val pseudo: String = obj.getString("first_name")
                 val email: String = obj.getString("email")
                 val id: String = obj.getString("id")
-                val user = User(id, first_name, last_name, email)
+                val user = User(id, pseudo, email, currentAccessToken.token)
+                addSharePreference(user)
                 CleanFragmentManager.displayHome(activity as MainActivity, user)
 
             } catch (e: JSONException) {
@@ -139,8 +146,16 @@ class LoginFragment : Fragment() {
             }
         }
         val parameters = Bundle()
-        parameters.putString("fields", "first_name,last_name,email,id")
+        parameters.putString("fields", "first_name,email,id")
         request.parameters = parameters
         request.executeAsync()
+    }
+
+    fun addSharePreference(user: User){
+        val prefsEditor: SharedPreferences.Editor = sharedpreferences.edit()
+        val gson = Gson()
+        val json: String = gson.toJson(user)
+        prefsEditor.putString("user", json)
+        prefsEditor.commit()
     }
 }
