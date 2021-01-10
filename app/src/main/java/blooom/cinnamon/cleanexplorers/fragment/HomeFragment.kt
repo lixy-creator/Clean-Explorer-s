@@ -31,8 +31,6 @@ import com.google.android.gms.maps.model.MarkerOptions
 
 class HomeFragment : Fragment(), OnMapReadyCallback {
 
-    @BindView(R.id.welcome_text)
-    lateinit var welcomeTextView: TextView
 
     @BindView(R.id.map)
     lateinit var mapView: MapView
@@ -59,13 +57,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         mapView.getMapAsync(this)
         val user: User? = arguments!!.getParcelable("user")
 
-        welcomeTextView.text = welcomeTextView.text.toString() + user!!.pseudo
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(mActivity)
-
-
-
-
         return view
     }
 
