@@ -1,4 +1,4 @@
-package blooom.cinnamon.cleanexplorers.manager
+package com.cinnamon.cleanexplorers.manager
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -40,10 +40,10 @@ class CleanExplorersLocationManager {
 
        var locationListenerNetwork: LocationListener = object : LocationListener {
            override fun onLocationChanged(location: Location) {
-               timer1!!.cancel()
+               timer1?.cancel()
                locationResult!!.gotLocation(location)
-               lm!!.removeUpdates(this)
-               lm!!.removeUpdates(locationListenerGps)
+               lm?.removeUpdates(this)
+               lm?.removeUpdates(locationListenerGps)
            }
 
            override fun onProviderDisabled(provider: String) {}
@@ -83,7 +83,7 @@ class CleanExplorersLocationManager {
             locationListenerNetwork
         )
         timer1 = Timer()
-        timer1!!.schedule(GetLastLocation(), 20000)
+        timer1?.schedule(GetLastLocation(), 20000)
         return true
     }
 
@@ -93,12 +93,12 @@ class CleanExplorersLocationManager {
     class GetLastLocation : TimerTask() {
         @SuppressLint("MissingPermission")
         override fun run() {
-            lm!!.removeUpdates(locationListenerGps)
-            lm!!.removeUpdates(locationListenerNetwork)
+            lm?.removeUpdates(locationListenerGps)
+            lm?.removeUpdates(locationListenerNetwork)
             var net_loc: Location? = null
             var gps_loc: Location? = null
-            if (gps_enabled) gps_loc = lm!!.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-            if (network_enabled) net_loc = lm!!.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+            if (gps_enabled) gps_loc = lm?.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+            if (network_enabled) net_loc = lm?.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
 
             //if there are both values use the latest one
             if (gps_loc != null && net_loc != null) {
@@ -108,14 +108,14 @@ class CleanExplorersLocationManager {
                 return
             }
             if (gps_loc != null) {
-                locationResult!!.gotLocation(gps_loc)
+                locationResult?.gotLocation(gps_loc)
                 return
             }
             if (net_loc != null) {
-                locationResult!!.gotLocation(net_loc)
+                locationResult?.gotLocation(net_loc)
                 return
             }
-            locationResult!!.gotLocation(null)
+            locationResult?.gotLocation(null)
         }
     }
 

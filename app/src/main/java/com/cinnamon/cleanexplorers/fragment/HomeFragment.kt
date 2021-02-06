@@ -1,4 +1,4 @@
-package blooom.cinnamon.cleanexplorers.fragment
+package com.cinnamon.cleanexplorers.fragment
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -8,21 +8,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import blooom.cinnamon.cleanexplorers.R
-import blooom.cinnamon.cleanexplorers.activity.MainActivity
-import blooom.cinnamon.cleanexplorers.manager.CleanExplorersLocationManager
-import blooom.cinnamon.cleanexplorers.model.User
-import butterknife.BindView
-import butterknife.ButterKnife
+import com.cinnamon.cleanexplorers.activity.MainActivity
+import com.cinnamon.cleanexplorers.databinding.FragmentHomeBinding
+import com.cinnamon.cleanexplorers.manager.CleanExplorersLocationManager
+import com.cinnamon.cleanexplorers.model.User
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -31,37 +27,35 @@ import com.google.android.gms.maps.model.MarkerOptions
 
 class HomeFragment : Fragment(), OnMapReadyCallback {
 
+    private  var _binding :FragmentHomeBinding?=null
+    private val binding get() = _binding!!
 
-    @BindView(R.id.map)
-    lateinit var mapView: MapView
     lateinit var map: GoogleMap
 
-    lateinit var mActivity: MainActivity
     private val REQUEST_CODE_ASK_PERMISSIONS = 123
     private var lastLocation: Location? = null
     lateinit var fusedLocationClient:FusedLocationProviderClient
 
     private var mFusedLocationClient: FusedLocationProviderClient? = null
 
-    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        val view: View = inflater.inflate(R.layout.fragment_home, container, false)
-        ButterKnife.bind(this, view)
-
-        mActivity = activity as MainActivity
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
         getLastLocation()
-        mapView.onCreate(savedInstanceState)
-        mapView.getMapAsync(this)
-        val user: User? = arguments!!.getParcelable("user")
+        binding.map.onCreate(savedInstanceState)
+        binding.map.getMapAsync(this)
+        val user: User? = requireArguments().getParcelable("user")
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+        return binding.root
 
-
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(mActivity)
-        return view
     }
 
+
+    private fun manageView(){
+
+    }
 
 
     @SuppressLint("MissingPermission")
@@ -73,7 +67,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
      }
 
-        CleanExplorersLocationManager().getLocation(mActivity, locationResult)
+        CleanExplorersLocationManager().getLocation(requireContext(), locationResult)
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -113,16 +107,16 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                     PackageManager.PERMISSION_GRANTED
                 ) {
                     if ((ContextCompat.checkSelfPermission(
-                            mActivity,
+                            requireContext(),
                             Manifest.permission.ACCESS_FINE_LOCATION
                         ) ==
                                 PackageManager.PERMISSION_GRANTED)
                     ) {
                         getLastLocation()
-                        Toast.makeText(mActivity, "Permission Granted", Toast.LENGTH_SHORT).show()
+                        Toast.makeText( requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    Toast.makeText(mActivity, "Permission Denied", Toast.LENGTH_SHORT).show()
+                    Toast.makeText( requireContext(), "Permission Denied", Toast.LENGTH_SHORT).show()
                 }
                 return
             }
@@ -131,22 +125,24 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
     override fun onResume() {
         super.onResume()
-        mapView.onResume();
+        binding.map.onResume()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mapView.onDestroy()
+        binding.map.onDestroy()
+        _binding = null
+
     }
 
     override fun onPause() {
         super.onPause()
-        mapView.onPause()
+        binding.map.onPause()
     }
 
     override fun onLowMemory() {
         super.onLowMemory()
-        mapView.onLowMemory()
+        binding.map.onLowMemory()
     }
 
     override fun onStart() {

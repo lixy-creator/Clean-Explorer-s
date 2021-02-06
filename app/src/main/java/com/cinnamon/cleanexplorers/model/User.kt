@@ -1,4 +1,4 @@
-package blooom.cinnamon.cleanexplorers.model
+package com.cinnamon.cleanexplorers.model
 
 import android.os.Parcel
 import android.os.Parcelable

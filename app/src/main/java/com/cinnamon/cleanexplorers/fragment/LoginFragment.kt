@@ -1,4 +1,4 @@
-package blooom.cinnamon.cleanexplorers.fragment
+package com.cinnamon.cleanexplorers.fragment
 
 import android.content.Context
 import android.content.Intent
@@ -10,19 +10,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import blooom.cinnamon.cleanexplorers.R
-import blooom.cinnamon.cleanexplorers.activity.MainActivity
-import blooom.cinnamon.cleanexplorers.manager.CleanFragmentManager
-import blooom.cinnamon.cleanexplorers.model.User
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.OnClick
+import androidx.navigation.fragment.findNavController
+import com.cinnamon.cleanexplorers.activity.MainActivity
+import com.cinnamon.cleanexplorers.databinding.FragmentLoginBinding
+import com.cinnamon.cleanexplorers.manager.CleanFragmentManager
+import com.cinnamon.cleanexplorers.model.User
 import com.facebook.AccessToken
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.GraphRequest
 import com.facebook.login.LoginResult
-import com.facebook.login.widget.LoginButton
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -41,27 +38,37 @@ class LoginFragment : Fragment() {
         private const val RC_SIGN_IN = 1
     }
 
-    @BindView(R.id.sign_facebook)
-    lateinit var btnFacebook: LoginButton
+    private var _binding: FragmentLoginBinding? = null
+    private val binding get() = _binding!!
 
     private lateinit var sharedpreferences: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
-        // Inflate the layout for this fragment
-        val view: View = inflater.inflate(R.layout.fragment_login, container, false)
-        ButterKnife.bind(this, view)
+    ): View {
 
-        val activity = activity as MainActivity
-         sharedpreferences =
-            activity.getSharedPreferences("data", Context.MODE_PRIVATE)
+        sharedpreferences =
+            requireContext().getSharedPreferences("data", Context.MODE_PRIVATE)
 
-        btnFacebook.setReadPermissions(listOf("email", "public_profile"))
 
-        btnFacebook.registerCallback(
-            activity.callbackManager,
+
+
+        _binding = FragmentLoginBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        manageView()
+        initListener()
+    }
+
+    private fun manageView() {
+        binding.facebookButton.setReadPermissions(listOf("email", "public_profile"))
+
+        binding.facebookButton.registerCallback(
+            (requireContext() as MainActivity).callbackManager,
             object : FacebookCallback<LoginResult> {
                 override fun onSuccess(loginResult: LoginResult) {
                     // App code
@@ -77,19 +84,17 @@ class LoginFragment : Fragment() {
                     Log.e(TAG, "Error " + exception!!.message)
                 }
             })
-
-
-        return view
     }
 
-    @OnClick(R.id.sign_google)
-    fun signInGoogle() {
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestEmail()
-            .build()
-        val mGoogleSignInClient = GoogleSignIn.getClient(activity as MainActivity, gso)
-        val signInIntent: Intent = mGoogleSignInClient.signInIntent
-        startActivityForResult(signInIntent, RC_SIGN_IN)
+    private fun initListener() {
+        binding.googleButton.setOnClickListener {
+            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build()
+            val mGoogleSignInClient = GoogleSignIn.getClient(activity as MainActivity, gso)
+            val signInIntent: Intent = mGoogleSignInClient.signInIntent
+            startActivityForResult(signInIntent, RC_SIGN_IN)
+        }
     }
 
 
@@ -115,7 +120,7 @@ class LoginFragment : Fragment() {
 
             val user = User(account!!.id, account.givenName, account.email, account.idToken)
             addSharePreference(user)
-            CleanFragmentManager.displayHome(activity as MainActivity, user)
+            goToHome()
         } catch (e: ApiException) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
@@ -123,7 +128,6 @@ class LoginFragment : Fragment() {
         }
     }
 
-    @OnClick(R.id.sign_facebook)
     fun signInFacebook() {
 
     }
@@ -139,7 +143,7 @@ class LoginFragment : Fragment() {
                 val id: String = obj.getString("id")
                 val user = User(id, pseudo, email, currentAccessToken.token)
                 addSharePreference(user)
-                CleanFragmentManager.displayHome(activity as MainActivity, user)
+                goToHome()
 
             } catch (e: JSONException) {
                 Log.e(TAG, "Error JSON Parse : " + e.message)
@@ -151,11 +155,16 @@ class LoginFragment : Fragment() {
         request.executeAsync()
     }
 
-    fun addSharePreference(user: User){
+    private fun goToHome() {
+        val direction = LoginFragmentDirections.actionLoginFragmentToHomeFragment()
+        findNavController().navigate(direction)
+    }
+
+    private fun addSharePreference(user: User) {
         val prefsEditor: SharedPreferences.Editor = sharedpreferences.edit()
         val gson = Gson()
         val json: String = gson.toJson(user)
         prefsEditor.putString("user", json)
-        prefsEditor.commit()
+        prefsEditor.apply()
     }
 }

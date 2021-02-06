@@ -1,4 +1,4 @@
-package blooom.cinnamon.cleanexplorers
+package com.cinnamon.cleanexplorers
 
 import org.junit.Test
 

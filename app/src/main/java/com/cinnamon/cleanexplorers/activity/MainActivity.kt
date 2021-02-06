@@ -1,13 +1,13 @@
-package blooom.cinnamon.cleanexplorers.activity
+package com.cinnamon.cleanexplorers.activity
 
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import blooom.cinnamon.cleanexplorers.R
-import blooom.cinnamon.cleanexplorers.manager.CleanFragmentManager
-import blooom.cinnamon.cleanexplorers.model.User
+import com.cinnamon.cleanexplorers.R
+import com.cinnamon.cleanexplorers.manager.CleanFragmentManager
+import com.cinnamon.cleanexplorers.model.User
 import com.facebook.CallbackManager
 import com.google.gson.Gson
 

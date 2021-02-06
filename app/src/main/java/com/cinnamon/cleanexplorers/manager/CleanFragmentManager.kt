@@ -1,4 +1,4 @@
-package blooom.cinnamon.cleanexplorers.manager
+package com.cinnamon.cleanexplorers.manager
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -6,10 +6,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import blooom.cinnamon.cleanexplorers.R
-import blooom.cinnamon.cleanexplorers.fragment.HomeFragment
-import blooom.cinnamon.cleanexplorers.fragment.LoginFragment
-import blooom.cinnamon.cleanexplorers.model.User
+import com.cinnamon.cleanexplorers.R
+import com.cinnamon.cleanexplorers.fragment.HomeFragment
+import com.cinnamon.cleanexplorers.fragment.LoginFragment
+import com.cinnamon.cleanexplorers.model.User
 
 
 /**
