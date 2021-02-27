@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+    <ListPreference
+        app:entries="@array/pref_volume_entries"
+        app:icon="@drawable/ic_volume"
+        app:key="@string/pref_volume_key"
+        app:title="@string/pref_volume_title"
+        app:useSimpleSummaryProvider="true" />
+
+    <Preference
+        app:icon="@drawable/ic_disconnect"
+        app:key="@string/pref_logout_key"
+        app:summary="@string/pref_logout_summary"
+        app:title="@string/pref_logout_title" />
+</androidx.preference.PreferenceScreen>
