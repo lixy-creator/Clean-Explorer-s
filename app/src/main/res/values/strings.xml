@@ -22,4 +22,7 @@
         <item>Musique</item>
         <item>Effets Sonores</item>
     </string-array>
+    <string name="ok">OK</string>
+    <string name="error_permission">Afin d\'utiliser notre application et de bénéficier de la meilleure expèrience. \nVeuillez autoriser Clean Explorer\'s à accéder à votre localisation </string>
+    <string name="error_location_title">Où êtes-vous? T_T</string>
 </resources>

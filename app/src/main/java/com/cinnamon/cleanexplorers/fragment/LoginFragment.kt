@@ -53,18 +53,17 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        manageView()
+        loginFacebook()
         initListener()
     }
 
-    private fun manageView() {
+    private fun loginFacebook() {
         callbackManager = CallbackManager.Factory.create()
         val profile = Profile.getCurrentProfile()
         if (profile != null) {
-            LoginManager.getInstance().logOut();
-        } else {
-            binding.facebookButton.performClick();
+            LoginManager.getInstance().logOut()
         }
+
         binding.facebookButton.setPermissions(listOf("email", "public_profile"))
         binding.facebookButton.fragment = this
         binding.facebookButton.registerCallback(

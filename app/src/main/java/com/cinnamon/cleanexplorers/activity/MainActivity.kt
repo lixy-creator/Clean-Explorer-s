@@ -3,7 +3,6 @@ package com.cinnamon.cleanexplorers.activity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.cinnamon.cleanexplorers.R
-import com.facebook.AccessToken
 
 
 class MainActivity : AppCompatActivity() {
