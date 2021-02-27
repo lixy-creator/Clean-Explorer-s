@@ -8,10 +8,11 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-<color name="transparent">#00FFFFFF</color>
-<color name="blue_dark">#066fb2</color>
-    <color name="ble_light">#04b2fb</color>
+    <color name="transparent">#00FFFFFF</color>
+    <color name="blue_dark">#066fb2</color>
+    <color name="blue_light">#04b2fb</color>
     <color name="green_light">#8dbc23</color>
     <color name="green_dark">#457708</color>
-<color name="grey">#A5A5A5</color>
+    <color name="grey">#A5A5A5</color>
+    <color name="green_opacity">#BABFFD8A</color>
 </resources>
