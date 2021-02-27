@@ -1,27 +1,23 @@
 package com.cinnamon.cleanexplorers.fragment
 
 import android.Manifest
-import android.annotation.SuppressLint
+import android.content.DialogInterface
 import android.content.pm.PackageManager
-import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.cinnamon.cleanexplorers.CleanExplorersApplication
 import com.cinnamon.cleanexplorers.R
 import com.cinnamon.cleanexplorers.databinding.FragmentHomeBinding
-import com.cinnamon.cleanexplorers.manager.CleanExplorersLocationManager
-import com.cinnamon.cleanexplorers.model.User
-import com.cinnamon.cleanexplorers.viewmodel.UserViewModel
-import com.cinnamon.cleanexplorers.viewmodel.UserViewModelFactory
+import com.cinnamon.cleanexplorers.viewmodel.HomeViewModel
+import com.cinnamon.cleanexplorers.viewmodel.HomeViewModelFactory
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -34,19 +30,19 @@ import com.google.android.gms.maps.model.MarkerOptions
 
 class HomeFragment : Fragment(), OnMapReadyCallback {
 
+    companion object {
+        const val REQUEST_LOCATION_PERMISSIONS = 10
+    }
+
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
     lateinit var map: GoogleMap
-    var isOpen = false
-    private val REQUEST_CODE_ASK_PERMISSIONS = 123
-    private var lastLocation: Location? = null
-    lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private var mFusedLocationClient: FusedLocationProviderClient? = null
 
-    private val userViewModel: UserViewModel by viewModels {
-        UserViewModelFactory((requireContext().applicationContext as CleanExplorersApplication).repository)
+    private val viewModel: HomeViewModel by viewModels {
+        HomeViewModelFactory((requireContext().applicationContext as CleanExplorersApplication).repository)
     }
 
     override fun onCreateView(
@@ -60,6 +56,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        checkLocationPermission()
         setView(savedInstanceState)
         setListener()
         setViewModel()
@@ -67,7 +64,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
 
     private fun setView(bundle: Bundle?) {
-        getLastLocation()
         binding.map.onCreate(bundle)
         binding.map.getMapAsync(this)
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
@@ -75,7 +71,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun setViewModel() {
-        userViewModel.user.observe(viewLifecycleOwner) {
+        viewModel.user.observe(viewLifecycleOwner) {
             it?.let { user ->
                 binding.dashboardLayout.homeTitle.text =
                     getString(R.string.home_title, user.firstName)
@@ -87,11 +83,13 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         binding.fabMenu.setOnClickListener {
             binding.dashboardLayout.layoutTool.isVisible = true
             binding.fabMenu.isVisible = false
-
+            map.uiSettings.setAllGesturesEnabled(false)
         }
+
         binding.dashboardLayout.buttonClose.setOnClickListener {
             binding.dashboardLayout.layoutTool.isVisible = false
             binding.fabMenu.isVisible = true
+            map.uiSettings.setAllGesturesEnabled(true)
         }
         binding.dashboardLayout.accountButton.setOnClickListener {
             val direction = HomeFragmentDirections.actionHomeFragmentToAccountFragment()
@@ -103,27 +101,35 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    @SuppressLint("MissingPermission")
-    private fun getLastLocation() {
-        val locationResult = object : CleanExplorersLocationManager.Companion.LocationResult() {
-            override fun gotLocation(location: Location?) {
-                lastLocation = location
-            }
 
+    private fun checkLocationPermission() {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) ==
+            PackageManager.PERMISSION_GRANTED
+        ) {
+            viewModel.getLastLocation(requireContext())
+        } else {
+            requestLocationPermission()
         }
-
-        CleanExplorersLocationManager().getLocation(requireContext(), locationResult)
     }
 
-    override fun onMapReady(googleMap: GoogleMap) {
+    private fun requestLocationPermission() {
+        if (this.shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
+            getAlertDialog()
+        }
+    }
 
+
+    override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
         googleMap.isBuildingsEnabled = true
         googleMap.setMinZoomPreference(19f)
         googleMap.setMaxZoomPreference(50f)
 
-        if (lastLocation != null) {
-            val myLatLng = LatLng(lastLocation!!.latitude, lastLocation!!.longitude)
+        viewModel.mLocation.observe(viewLifecycleOwner) {
+            val myLatLng = LatLng(it.latitude, it.longitude)
             map.addMarker(
                 MarkerOptions()
                     .position(myLatLng)
@@ -138,35 +144,38 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             // googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 20.0f))
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
         }
-
-        getLastLocation()
     }
 
     override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>,
+        requestCode: Int,
+        permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        when (requestCode) {
-            1 -> {
-                if (grantResults.isNotEmpty() && grantResults[0] ==
-                    PackageManager.PERMISSION_GRANTED
-                ) {
-                    if ((ContextCompat.checkSelfPermission(
-                            requireContext(),
-                            Manifest.permission.ACCESS_FINE_LOCATION
-                        ) ==
-                                PackageManager.PERMISSION_GRANTED)
-                    ) {
-                        getLastLocation()
-                        Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                } else {
-                    Toast.makeText(requireContext(), "Permission Denied", Toast.LENGTH_SHORT).show()
-                }
-                return
+        if (requestCode == REQUEST_LOCATION_PERMISSIONS) {
+            if (grantResults.size == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                viewModel.getLastLocation(requireContext())
+            } else {
+
+                getAlertDialog()
             }
         }
+    }
+
+    private fun getAlertDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.error_location_title)
+            .setMessage(
+                R.string.error_permission
+            )
+            .setCancelable(false)
+            .setPositiveButton(R.string.ok) { dialog: DialogInterface, _: Int ->
+                this.requestPermissions(
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    REQUEST_LOCATION_PERMISSIONS
+                )
+                dialog.dismiss()
+            }
+            .create().show()
     }
 
     override fun onResume() {
@@ -191,8 +200,4 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         binding.map.onLowMemory()
     }
 
-    override fun onStart() {
-        super.onStart()
-        getLastLocation()
-    }
 }
