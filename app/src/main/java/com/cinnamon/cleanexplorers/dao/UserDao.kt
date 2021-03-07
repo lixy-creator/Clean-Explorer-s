@@ -4,18 +4,18 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.cinnamon.cleanexplorers.model.User
+import com.cinnamon.cleanexplorers.model.LocalUser
 import kotlinx.coroutines.flow.Flow
 
 
 @Dao
 interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(user: User)
+    suspend fun insert(localUser: LocalUser)
 
     @Query("DELETE FROM user")
     suspend fun deleteAll()
 
     @Query("SELECT * FROM user")
-    fun getUser(): Flow<User?>
+    fun getUser(): Flow<LocalUser?>
 }

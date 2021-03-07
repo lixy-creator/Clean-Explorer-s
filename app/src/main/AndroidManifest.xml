@@ -19,7 +19,7 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
         <activity
-            android:name=".activity.MainActivity"
+            android:name="com.cinnamon.cleanexplorers.view.activity.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/SplashScreenTheme"
             android:windowSoftInputMode="adjustResize|stateHidden">

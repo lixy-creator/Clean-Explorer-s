@@ -10,7 +10,7 @@ import kotlinx.parcelize.Parcelize
  * Created by Fanny on 11/11/2020.
  **/
 @Entity(tableName = "user")
-data class User(
+data class LocalUser(
     @PrimaryKey
     val id: String,
     val firstName: String,

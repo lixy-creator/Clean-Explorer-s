@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/blue_dark"
-    tools:context=".fragment.AccountFragment">
+    tools:context=".view.fragment.AccountFragment">
 
     <TextView
         android:id="@+id/textView"

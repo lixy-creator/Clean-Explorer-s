@@ -1,4 +1,4 @@
-package com.cinnamon.cleanexplorers.fragment
+package com.cinnamon.cleanexplorers.view.fragment
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,15 +7,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.cinnamon.cleanexplorers.CleanExplorersApplication
 import com.cinnamon.cleanexplorers.databinding.FragmentLoginBinding
-import com.cinnamon.cleanexplorers.model.User
+import com.cinnamon.cleanexplorers.model.LocalUser
 import com.cinnamon.cleanexplorers.utils.Constant
-import com.cinnamon.cleanexplorers.viewmodel.UserViewModel
-import com.cinnamon.cleanexplorers.viewmodel.UserViewModelFactory
+import com.cinnamon.cleanexplorers.view.viewmodel.UserViewModel
+import com.cinnamon.cleanexplorers.view.viewmodel.UserViewModelFactory
 import com.facebook.*
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
@@ -25,7 +26,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import org.json.JSONException
-import androidx.core.view.isVisible
 
 
 class LoginFragment : Fragment() {
@@ -40,7 +40,7 @@ class LoginFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val userViewModel: UserViewModel by viewModels {
-        UserViewModelFactory((requireContext().applicationContext as CleanExplorersApplication).repository)
+        UserViewModelFactory((requireContext().applicationContext as CleanExplorersApplication).userRepository)
     }
     private lateinit var callbackManager: CallbackManager
     override fun onCreateView(
@@ -124,7 +124,7 @@ class LoginFragment : Fragment() {
             val account = completedTask.getResult(ApiException::class.java)
 
             val user =
-                User(
+                LocalUser(
                     account.id!!,
                     account.givenName!!,
                     account.email!!,
@@ -148,7 +148,7 @@ class LoginFragment : Fragment() {
                 val pseudo: String = obj.getString("first_name")
                 val email: String = obj.getString("email")
                 val id: String = obj.getString("id")
-                val user = User(id, pseudo, email, currentAccessToken.token, Constant.FACEBOOK)
+                val user = LocalUser(id, pseudo, email, currentAccessToken.token, Constant.FACEBOOK)
                 userViewModel.insert(user)
                 goToHome()
 

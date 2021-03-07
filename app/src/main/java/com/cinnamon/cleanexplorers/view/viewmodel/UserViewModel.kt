@@ -1,17 +1,17 @@
-package com.cinnamon.cleanexplorers.viewmodel;
+package com.cinnamon.cleanexplorers.view.viewmodel;
 
 import androidx.lifecycle.*
-import com.cinnamon.cleanexplorers.model.User
+import com.cinnamon.cleanexplorers.model.LocalUser
 import com.cinnamon.cleanexplorers.repository.UserRepository;
 import kotlinx.coroutines.launch
 
 class UserViewModel(private val repository: UserRepository) : ViewModel() {
 
 
-    val user: LiveData<User?> = repository.user.asLiveData()
+    val localUser: LiveData<LocalUser?> = repository.localUser.asLiveData()
 
-    fun insert(user: User) = viewModelScope.launch {
-        repository.insert(user)
+    fun insert(localUser: LocalUser) = viewModelScope.launch {
+        repository.insert(localUser)
     }
 
     fun delete() = viewModelScope.launch {
