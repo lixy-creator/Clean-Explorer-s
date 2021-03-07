@@ -1,4 +1,4 @@
-package com.cinnamon.cleanexplorers.fragment
+package com.cinnamon.cleanexplorers.view.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater

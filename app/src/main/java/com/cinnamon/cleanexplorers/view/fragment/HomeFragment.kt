@@ -1,4 +1,4 @@
-package com.cinnamon.cleanexplorers.fragment
+package com.cinnamon.cleanexplorers.view.fragment
 
 import android.Manifest
 import android.content.DialogInterface
@@ -16,8 +16,8 @@ import androidx.navigation.fragment.findNavController
 import com.cinnamon.cleanexplorers.CleanExplorersApplication
 import com.cinnamon.cleanexplorers.R
 import com.cinnamon.cleanexplorers.databinding.FragmentHomeBinding
-import com.cinnamon.cleanexplorers.viewmodel.HomeViewModel
-import com.cinnamon.cleanexplorers.viewmodel.HomeViewModelFactory
+import com.cinnamon.cleanexplorers.view.viewmodel.HomeViewModel
+import com.cinnamon.cleanexplorers.view.viewmodel.HomeViewModelFactory
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -42,7 +42,10 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private var mFusedLocationClient: FusedLocationProviderClient? = null
 
     private val viewModel: HomeViewModel by viewModels {
-        HomeViewModelFactory((requireContext().applicationContext as CleanExplorersApplication).repository)
+        HomeViewModelFactory(
+            (requireContext().applicationContext as CleanExplorersApplication).userRepository,
+            (requireContext().applicationContext as CleanExplorersApplication).missionRepository
+        )
     }
 
     override fun onCreateView(
@@ -71,7 +74,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun setViewModel() {
-        viewModel.user.observe(viewLifecycleOwner) {
+        viewModel.localUser.observe(viewLifecycleOwner) {
             it?.let { user ->
                 binding.dashboardLayout.homeTitle.text =
                     getString(R.string.home_title, user.firstName)

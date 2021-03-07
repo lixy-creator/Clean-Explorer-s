@@ -1,4 +1,4 @@
-package com.cinnamon.cleanexplorers.fragment
+package com.cinnamon.cleanexplorers.view.fragment
 
 import android.os.Bundle
 import android.view.View
@@ -9,22 +9,18 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.cinnamon.cleanexplorers.CleanExplorersApplication
 import com.cinnamon.cleanexplorers.R
-import com.cinnamon.cleanexplorers.activity.MainActivity
 import com.cinnamon.cleanexplorers.utils.Constant
-import com.cinnamon.cleanexplorers.viewmodel.UserViewModel
-import com.cinnamon.cleanexplorers.viewmodel.UserViewModelFactory
-import com.facebook.CallbackManager
+import com.cinnamon.cleanexplorers.view.viewmodel.UserViewModel
+import com.cinnamon.cleanexplorers.view.viewmodel.UserViewModelFactory
 import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
 
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
     private val userViewModel: UserViewModel by viewModels {
-        UserViewModelFactory((requireContext().applicationContext as CleanExplorersApplication).repository)
+        UserViewModelFactory((requireContext().applicationContext as CleanExplorersApplication).userRepository)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -45,7 +41,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun onDisconnectClicked() {
-        userViewModel.user.observe(viewLifecycleOwner) {
+        userViewModel.localUser.observe(viewLifecycleOwner) {
             val user = it ?: return@observe
             when (user.type) {
                 Constant.FACEBOOK -> signOutFacebook()

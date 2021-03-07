@@ -1,4 +1,4 @@
-package com.cinnamon.cleanexplorers.fragment
+package com.cinnamon.cleanexplorers.view.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,8 +9,8 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.cinnamon.cleanexplorers.CleanExplorersApplication
 import com.cinnamon.cleanexplorers.databinding.FragmentRoutingBinding
-import com.cinnamon.cleanexplorers.viewmodel.UserViewModel
-import com.cinnamon.cleanexplorers.viewmodel.UserViewModelFactory
+import com.cinnamon.cleanexplorers.view.viewmodel.UserViewModel
+import com.cinnamon.cleanexplorers.view.viewmodel.UserViewModelFactory
 
 
 class RoutingFragment : Fragment() {
@@ -19,7 +19,7 @@ class RoutingFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val userViewModel: UserViewModel by viewModels {
-        UserViewModelFactory((requireContext().applicationContext as CleanExplorersApplication).repository)
+        UserViewModelFactory((requireContext().applicationContext as CleanExplorersApplication).userRepository)
     }
 
     override fun onCreateView(
@@ -36,7 +36,7 @@ class RoutingFragment : Fragment() {
     }
 
     private fun redirectionManager() {
-        userViewModel.user.observe(viewLifecycleOwner) {
+        userViewModel.localUser.observe(viewLifecycleOwner) {
             it?.let {
                 val direction = RoutingFragmentDirections.actionRoutingFragmentToHomeFragment()
                 findNavController().navigate(direction)
