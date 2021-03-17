@@ -13,7 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.cinnamon.cleanexplorers.CleanExplorersApplication
 import com.cinnamon.cleanexplorers.databinding.FragmentLoginBinding
-import com.cinnamon.cleanexplorers.model.LocalUser
+import com.cinnamon.cleanexplorers.database.entity.LocalUser
 import com.cinnamon.cleanexplorers.utils.Constant
 import com.cinnamon.cleanexplorers.view.viewmodel.UserViewModel
 import com.cinnamon.cleanexplorers.view.viewmodel.UserViewModelFactory

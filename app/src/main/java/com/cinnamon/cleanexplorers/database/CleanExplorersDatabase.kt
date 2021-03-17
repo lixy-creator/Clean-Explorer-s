@@ -1,15 +1,21 @@
-package com.cinnamon.cleanexplorers.manager
+package com.cinnamon.cleanexplorers.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.cinnamon.cleanexplorers.dao.UserDao
-import com.cinnamon.cleanexplorers.model.LocalUser
+import androidx.room.TypeConverters
+import com.cinnamon.cleanexplorers.database.dao.GarbageDao
+import com.cinnamon.cleanexplorers.database.dao.UserDao
+import com.cinnamon.cleanexplorers.database.entity.Garbage
+import com.cinnamon.cleanexplorers.database.entity.LocalUser
+import com.cinnamon.cleanexplorers.database.util.Converters
 
-@Database(entities = [LocalUser::class], version = 1, exportSchema = false)
+@Database(entities = [LocalUser::class, Garbage::class], version = 1, exportSchema = false)
+@TypeConverters(Converters::class)
 abstract class CleanExplorersDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
+    abstract fun garbageDao():GarbageDao
 
     companion object {
         @Volatile

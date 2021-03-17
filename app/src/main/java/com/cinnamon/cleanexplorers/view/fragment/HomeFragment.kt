@@ -44,7 +44,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private val viewModel: HomeViewModel by viewModels {
         HomeViewModelFactory(
             (requireContext().applicationContext as CleanExplorersApplication).userRepository,
-            (requireContext().applicationContext as CleanExplorersApplication).missionRepository
+            (requireContext().applicationContext as CleanExplorersApplication).productRepository
         )
     }
 
@@ -80,6 +80,10 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                     getString(R.string.home_title, user.firstName)
             }
         }
+
+        viewModel.garbageNbr.observe(viewLifecycleOwner) {
+            binding.dashboardLayout.textRecap.text = getString(R.string.nbr_garbage_text, it?:0)
+        }
     }
 
     private fun setListener() {
@@ -100,6 +104,11 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         }
         binding.dashboardLayout.settingsButton.setOnClickListener {
             val direction = HomeFragmentDirections.actionHomeFragmentToSettingFragment()
+            this.findNavController().navigate(direction)
+        }
+
+        binding.scannerButton.setOnClickListener {
+            val direction = HomeFragmentDirections.actionHomeFragmentToScannerFragment()
             this.findNavController().navigate(direction)
         }
     }
@@ -158,7 +167,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             if (grantResults.size == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 viewModel.getLastLocation(requireContext())
             } else {
-
                 getAlertDialog()
             }
         }

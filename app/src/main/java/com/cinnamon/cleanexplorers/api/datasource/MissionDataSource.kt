@@ -7,19 +7,14 @@ import com.cinnamon.cleanexplorers.api.service.safeApiCall
 import com.cinnamon.cleanexplorers.api.model.Result
 
 
-interface MissionDataSource {
-    suspend fun getGlobalMission(): Result<List<Mission>, Throwable>
-    suspend fun getSpecialMission(): Result<List<Mission>, Throwable>
-}
+class MissionDataSource(client: ApiClient)  {
+   private val api: MissionAPI = client.createService(MissionAPI::class.java)
 
-class MissionDataSourceImpl(client: ApiClient) : MissionDataSource {
-    val api: MissionAPI = client.createService(MissionAPI::class.java)
-
-    override suspend fun getGlobalMission() = safeApiCall {
+     suspend fun getGlobalMission() = safeApiCall {
         api.getGlobalMission()
     }
 
-    override suspend fun getSpecialMission() = safeApiCall {
+     suspend fun getSpecialMission() = safeApiCall {
         api.getSpecialMission()
     }
 

@@ -1,10 +1,10 @@
-package com.cinnamon.cleanexplorers.dao
+package com.cinnamon.cleanexplorers.database.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.cinnamon.cleanexplorers.model.LocalUser
+import com.cinnamon.cleanexplorers.database.entity.LocalUser
 import kotlinx.coroutines.flow.Flow
 
 

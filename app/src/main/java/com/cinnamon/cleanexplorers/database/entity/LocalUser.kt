@@ -1,10 +1,8 @@
-package com.cinnamon.cleanexplorers.model
+package com.cinnamon.cleanexplorers.database.entity
 
 
-import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import kotlinx.parcelize.Parcelize
 
 /**
  * Created by Fanny on 11/11/2020.

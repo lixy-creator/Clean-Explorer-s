@@ -1,7 +1,7 @@
 package com.cinnamon.cleanexplorers.view.viewmodel;
 
 import androidx.lifecycle.*
-import com.cinnamon.cleanexplorers.model.LocalUser
+import com.cinnamon.cleanexplorers.database.entity.LocalUser
 import com.cinnamon.cleanexplorers.repository.UserRepository;
 import kotlinx.coroutines.launch
 
