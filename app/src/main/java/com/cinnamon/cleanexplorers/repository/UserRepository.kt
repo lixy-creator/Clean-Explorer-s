@@ -1,8 +1,8 @@
 package com.cinnamon.cleanexplorers.repository
 
 import androidx.annotation.WorkerThread
-import com.cinnamon.cleanexplorers.dao.UserDao
-import com.cinnamon.cleanexplorers.model.LocalUser
+import com.cinnamon.cleanexplorers.database.dao.UserDao
+import com.cinnamon.cleanexplorers.database.entity.LocalUser
 import kotlinx.coroutines.flow.Flow
 
 class UserRepository(private val userDao: UserDao) {

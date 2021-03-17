@@ -116,7 +116,6 @@
         android:layout_marginTop="43dp"
         android:layout_marginEnd="20dp"
         style="@style/TextAppearance"
-        android:text="Vous avez scanné : 65464 Déchets aujourd'hui"
         android:textAlignment="center"
         android:textSize="25dp"
         app:layout_constraintEnd_toEndOf="parent"

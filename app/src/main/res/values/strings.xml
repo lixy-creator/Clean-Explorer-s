@@ -25,4 +25,13 @@
     <string name="ok">OK</string>
     <string name="error_permission">Afin d\'utiliser notre application et de bénéficier de la meilleure expèrience. \nVeuillez autoriser Clean Explorer\'s à accéder à votre localisation </string>
     <string name="error_location_title">Où êtes-vous? T_T</string>
+    <string name="scan_text_info">Scannez le code-barres ici</string>
+    <string name="validate_text">Valider</string>
+    <string name="name_product">Nom</string>
+    <string name="packaging_product">Emballage</string>
+    <string name="quantity_product">Quantité</string>
+    <string name="not_defined">non défini </string>
+    <string name="title_detail_product">Détail du Produit</string>
+    <string name="one">1</string>
+    <string name="nbr_garbage_text">Vous avez scanné : %d déchets aujourd\'hui</string>
 </resources>
