@@ -7,8 +7,15 @@ import retrofit2.http.POST
 interface UserAPI {
 
     @POST("create_user.php")
-    suspend fun createUser(@Body user: User)
+    suspend fun createUser(
+        @Body name: String,
+        firstName: String,
+        email: String,
+        password: String,
+        passwordConf: String,
+        dateBirth: String
+    )
 
     @POST("user.php")
-    suspend fun getUser(@Body login: String, password: String):User
+    suspend fun getUser(@Body login: String, password: String): User
 }
