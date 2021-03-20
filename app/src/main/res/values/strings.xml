@@ -24,7 +24,7 @@
     </string-array>
     <string name="ok">OK</string>
     <string name="error_permission">Afin d\'utiliser notre application et de bénéficier de la meilleure expèrience. \nVeuillez autoriser Clean Explorer\'s à accéder à votre localisation </string>
-    <string name="error_location_title">Où êtes-vous? T_T</string>
+    <string name="error_location_title">Où êtes-vous ?</string>
     <string name="scan_text_info">Scannez le code-barres ici</string>
     <string name="validate_text">Valider</string>
     <string name="name_product">Nom</string>

@@ -24,6 +24,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="5dp"
         android:src="@drawable/setting"
+        app:tint="@color/white"
         app:backgroundTint="@color/green_light"
         app:layout_constraintEnd_toEndOf="@+id/titleSettings"
         app:layout_constraintTop_toBottomOf="@+id/titleSettings" />
@@ -35,6 +36,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:src="@drawable/account"
+        app:tint="@color/white"
         app:backgroundTint="@color/green_light"
         app:layout_constraintStart_toStartOf="@+id/titleAccount"
         app:layout_constraintTop_toBottomOf="@+id/titleAccount" />
@@ -45,6 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:src="@drawable/check_list"
+        app:tint="@color/white"
         app:backgroundTint="@color/green_light"
         app:layout_constraintStart_toStartOf="@+id/titleTask"
         app:layout_constraintTop_toBottomOf="@+id/titleTask" />
@@ -129,6 +132,7 @@
         android:layout_marginBottom="16dp"
         android:src="@drawable/arrow_down"
         app:backgroundTint="@color/white"
+        app:tint="@color/green_light"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

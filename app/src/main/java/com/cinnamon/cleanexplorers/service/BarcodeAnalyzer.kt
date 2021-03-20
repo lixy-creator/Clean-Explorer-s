@@ -1,4 +1,4 @@
-package com.cinnamon.cleanexplorers.manager
+package com.cinnamon.cleanexplorers.service
 
 import android.annotation.SuppressLint
 import androidx.camera.core.ImageAnalysis
