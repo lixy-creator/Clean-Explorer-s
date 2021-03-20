@@ -21,7 +21,7 @@ import com.bumptech.glide.Glide
 import com.cinnamon.cleanexplorers.CleanExplorersApplication
 import com.cinnamon.cleanexplorers.R
 import com.cinnamon.cleanexplorers.databinding.FragmentScannerBarcodeBinding
-import com.cinnamon.cleanexplorers.manager.BarcodeAnalyzer
+import com.cinnamon.cleanexplorers.service.BarcodeAnalyzer
 import com.cinnamon.cleanexplorers.view.viewmodel.ScanBarcodeViewModel
 import com.cinnamon.cleanexplorers.view.viewmodel.ScanBarcodeViewModelFactory
 import java.util.concurrent.ExecutorService
