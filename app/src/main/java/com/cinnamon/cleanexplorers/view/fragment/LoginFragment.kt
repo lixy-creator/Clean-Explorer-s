@@ -151,8 +151,7 @@ class LoginFragment : Fragment() {
                     account.givenName!!,
                     account.email!!,
                     account.idToken,
-                    Constant.GOOGLE
-                )
+                    Constant.GOOGLE,)
             viewModel.insert(user)
             goToHome()
         } catch (e: ApiException) {
@@ -170,7 +169,13 @@ class LoginFragment : Fragment() {
                 val pseudo: String = obj.getString("first_name")
                 val email: String = obj.getString("email")
                 val id: String = obj.getString("id")
-                val user = LocalUser(id, pseudo, email, currentAccessToken.token, Constant.FACEBOOK)
+                val user = LocalUser(
+                    id,
+                    pseudo,
+                    email,
+                    currentAccessToken.token,
+                    Constant.FACEBOOK
+                )
                 viewModel.insert(user)
                 goToHome()
 

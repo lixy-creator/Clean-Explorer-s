@@ -16,5 +16,5 @@ data class CleanStop(
     @SerialName("image")
     val image: String,
     @SerialName("description")
-    val description: String,
+    val description: String?,
 )

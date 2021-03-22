@@ -9,8 +9,12 @@ import java.util.*
 data class User(
     @SerialName("id")
     val id: Int,
-    @SerialName("lastName")
-    val firstname: String,
+    @SerialName("firstName")
+    val firstName: String,
+    @SerialName("email")
     val email: String,
-    val dateBirth: String
+    @SerialName("dateBirth")
+    val dateBirth: String,
+    @SerialName("dateCreate")
+    val dateCreate:String,
 )

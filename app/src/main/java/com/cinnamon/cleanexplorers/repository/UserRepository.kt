@@ -3,6 +3,7 @@ package com.cinnamon.cleanexplorers.repository
 import androidx.annotation.WorkerThread
 import com.cinnamon.cleanexplorers.api.datasource.UserDataSource
 import com.cinnamon.cleanexplorers.api.exception.TechnicalException
+import com.cinnamon.cleanexplorers.api.exception.WrongLoginOrPassword
 import com.cinnamon.cleanexplorers.api.model.Failure
 import com.cinnamon.cleanexplorers.api.model.Result
 import com.cinnamon.cleanexplorers.api.model.Success
@@ -12,6 +13,7 @@ import com.cinnamon.cleanexplorers.database.dao.UserDao
 import com.cinnamon.cleanexplorers.database.entity.LocalUser
 import kotlinx.coroutines.flow.Flow
 import okhttp3.OkHttpClient
+import retrofit2.HttpException
 
 class UserRepository(private val userDao: UserDao) {
 
@@ -36,7 +38,10 @@ class UserRepository(private val userDao: UserDao) {
                 Success(value = response.value.run { this })
             }
             is Failure -> {
-                Failure(TechnicalException(response.reason))
+                when ((response.reason as? HttpException)?.code()) {
+                    401->Failure(WrongLoginOrPassword(response.reason))
+                    else-> Failure(TechnicalException(response.reason))
+                }
             }
         }
     }
