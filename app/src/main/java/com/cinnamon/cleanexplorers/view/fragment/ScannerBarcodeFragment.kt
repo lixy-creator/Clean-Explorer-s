@@ -107,8 +107,11 @@ class ScannerBarcodeFragment : Fragment() {
             val packaging = binding.detailProductLayout.packagingInfo.text.toString()
             val quantity = binding.detailProductLayout.quantityInfo.text.toString().toInt()
             viewModel.insertGarbage(name, packaging, quantity)
-            val direction = ScannerBarcodeFragmentDirections.actionScannerFragmentToHomeFragment()
-            this.findNavController().navigate(direction)
+           goToHome()
+        }
+
+        binding.closeButton.setOnClickListener{
+            goToHome()
         }
     }
 
@@ -188,6 +191,10 @@ class ScannerBarcodeFragment : Fragment() {
         }
     }
 
+    private fun goToHome(){
+        val direction = ScannerBarcodeFragmentDirections.actionScannerFragmentToHomeFragment()
+        this.findNavController().navigate(direction)
+    }
     override fun onResume() {
         super.onResume()
         processingBarcode.set(false)

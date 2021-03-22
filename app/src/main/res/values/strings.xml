@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Clean Explorer\'s</string>
     <string name="facebook_app_id">370429351049635</string>
@@ -6,10 +7,11 @@
     <string name="settings_title">Paramètres</string>
     <string name="account_title">Mon Compte</string>
     <string name="missions_title">Missions</string>
-    <string name="welcome_title">Bienvenue!</string>
-    <string name="connect_title">Connectez-vous </string>
+    <string name="welcome_title">Bienvenue !</string>
+    <string name="connect_title">Se connecter </string>
     <string name="home_title">Bonjour %1$s</string>
     <plurals name="countdown_result">
+        <item quantity="zero">Vous n\'avez pas encore scanner de déchets</item>
         <item quantity="one"> Vous avez scanné : %d Déchet aujourd\'hui</item>
         <item quantity="other"> Vous avez scanné : %d Déchets aujourd\'hui</item>
     </plurals>
@@ -33,5 +35,17 @@
     <string name="not_defined">non défini </string>
     <string name="title_detail_product">Détail du Produit</string>
     <string name="one">1</string>
-    <string name="nbr_garbage_text">Vous avez scanné : %d déchets aujourd\'hui</string>
+    <string name="or">ou</string>
+    <string name="no_account">Vous n\'avez pas de compte ?</string>
+    <string name="subscribe_title">Créer un compte</string>
+    <string name="subscribe_text">S\'inscrire</string>
+    <string name="subscription_text">Inscription</string>
+    <string name="connect_text">Connexion</string>
+    <string name="account_yet">Vous avez déjà un compte ?</string>
+    <string name="error_field_empty">Champs requis</string>
+    <string name="error_login">Login ou mot de passe incorrect</string>
+    <string name="error_email">Adresse mail incorrecte</string>
+    <string name="error_date_birth">Date de naissance incorrecte</string>
+    <string name="error_password_confirmation">Les mot de passe ne sont pas identiques</string>
+
 </resources>

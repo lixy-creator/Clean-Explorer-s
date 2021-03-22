@@ -10,7 +10,6 @@ data class User(
     @SerialName("id")
     val id: Int,
     @SerialName("lastName")
-    val lastName: String,
     val firstname: String,
     val email: String,
     val dateBirth: String
