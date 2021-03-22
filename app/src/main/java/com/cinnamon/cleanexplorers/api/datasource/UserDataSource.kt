@@ -1,7 +1,9 @@
 package com.cinnamon.cleanexplorers.api.datasource
 
 import com.cinnamon.cleanexplorers.api.infrastructure.UserAPI
+import com.cinnamon.cleanexplorers.api.model.Email
 import com.cinnamon.cleanexplorers.api.model.NewUser
+import com.cinnamon.cleanexplorers.api.model.RequestLogin
 import com.cinnamon.cleanexplorers.api.model.User
 import com.cinnamon.cleanexplorers.api.service.ApiClient
 import com.cinnamon.cleanexplorers.api.service.safeApiCall
@@ -15,7 +17,11 @@ class UserDataSource(client: ApiClient) {
     }
 
 
-    suspend fun getUser(login:String, password:String)= safeApiCall {
-        api.getUser(login, password)
+    suspend fun getUser(requestLogin: RequestLogin)= safeApiCall {
+        api.getUser(requestLogin)
+    }
+
+    suspend fun checkEmail(email:Email)= safeApiCall {
+        api.checkEmail(email)
     }
 }
