@@ -3,6 +3,7 @@ package com.cinnamon.cleanexplorers.database.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.*
 
 /**
  * Created by Fanny on 11/11/2020.
@@ -15,4 +16,6 @@ data class LocalUser(
     val email: String,
     val token: String?,
     val type: String,
+    val dateBirth:Date?=null,
+    val createDate: Date?=null,
 )

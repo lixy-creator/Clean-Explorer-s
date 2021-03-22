@@ -14,5 +14,7 @@ data class User(
     @SerialName("email")
     val email: String,
     @SerialName("dateBirth")
-    val dateBirth: String
+    val dateBirth: String,
+    @SerialName("dateCreate")
+    val dateCreate:String,
 )
