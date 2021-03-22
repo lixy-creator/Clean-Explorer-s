@@ -10,10 +10,6 @@ class UserViewModel(private val repository: UserRepository) : ViewModel() {
 
     val localUser: LiveData<LocalUser?> = repository.localUser.asLiveData()
 
-    fun insert(localUser: LocalUser) = viewModelScope.launch {
-        repository.insert(localUser)
-    }
-
     fun delete() = viewModelScope.launch {
         repository.deleteAll()
     }

@@ -9,24 +9,14 @@ import com.cinnamon.cleanexplorers.repository.ProductRepository
 import com.cinnamon.cleanexplorers.repository.UserRepository
 
 class HomeViewModel(
-    private val userRepository: UserRepository,
-    private val productRepository: ProductRepository
+   userRepository: UserRepository,
+    productRepository: ProductRepository
 ) : ViewModel() {
 
 
     val localUser: LiveData<LocalUser?> = userRepository.localUser.asLiveData()
-
-    val mLocation = MutableLiveData<Location>()
     val garbageNbr = productRepository.getAllGarbage().asLiveData()
 
-    /**fun getLastLocation(context: Context) {
-        val locationResult = object : CleanExplorersLocationManager.Companion.LocationResult() {
-            override fun gotLocation(location: Location?) {
-                mLocation.postValue(location)
-            }
-        }
-        CleanExplorersLocationManager().getLocation(context, locationResult)
-    }**/
 
     fun getLocationData(context: Context) = LocationLiveData(context)
 

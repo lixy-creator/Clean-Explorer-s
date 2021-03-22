@@ -33,7 +33,7 @@ import com.google.android.gms.maps.model.*
 class HomeFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveStartedListener,
     GoogleMap.OnCameraMoveListener,
     GoogleMap.OnCameraMoveCanceledListener,
-    GoogleMap.OnCameraIdleListener{
+    GoogleMap.OnCameraIdleListener {
 
     companion object {
         const val LOCATION_REQUEST = 100
@@ -44,7 +44,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveStart
 
     lateinit var map: GoogleMap
     var isFirstLocation = true
-    lateinit var myLocation :Location
+    private var myLocation: Location? = null
 
     var isGPSEnabled = false
 
@@ -89,7 +89,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveStart
         }
 
         viewModel.garbageNbr.observe(viewLifecycleOwner) {
-            binding.dashboardLayout.textRecap.text = getString(R.string.nbr_garbage_text, it ?: 0)
+            binding.dashboardLayout.textRecap.text = resources.getQuantityString(R.plurals.countdown_result, it ?: 0, it ?: 0)
         }
     }
 
@@ -97,19 +97,31 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveStart
         binding.fabMenu.setOnClickListener {
             binding.dashboardLayout.layoutTool.isVisible = true
             binding.fabMenu.isVisible = false
+            binding.scannerButton.isVisible=false
             map.uiSettings.setAllGesturesEnabled(false)
         }
 
         binding.dashboardLayout.buttonClose.setOnClickListener {
             binding.dashboardLayout.layoutTool.isVisible = false
             binding.fabMenu.isVisible = true
+            binding.scannerButton.isVisible=true
             map.uiSettings.setAllGesturesEnabled(true)
         }
 
         binding.centerButton.setOnClickListener {
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(myLocation.latitude,myLocation.longitude), 20.0f))
-            binding.centerButton.isVisible=false
+            myLocation?.let { location ->
+                map.animateCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                        LatLng(
+                            location.latitude,
+                            location.longitude
+                        ), 20.0f
+                    )
+                )
+                binding.centerButton.isVisible = false
+            }
         }
+
         binding.dashboardLayout.accountButton.setOnClickListener {
             val direction = HomeFragmentDirections.actionHomeFragmentToAccountFragment()
             this.findNavController().navigate(direction)
@@ -158,7 +170,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveStart
     private fun startLocationUpdate() {
         viewModel.getLocationData(requireContext()).observe(viewLifecycleOwner) {
             map.clear()
-            myLocation=it
+            myLocation = it
             val latLng = LatLng(it.latitude, it.longitude)
             val markerOptions = MarkerOptions()
                 .position(latLng)
@@ -188,8 +200,13 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveStart
         googleMap.setOnCameraMoveCanceledListener(this)
         googleMap.uiSettings.isCompassEnabled = false
 
+        var latLng = LatLng(48.8716954, 2.3185572)
+        myLocation?.let {
+            latLng = LatLng(it.latitude, it.longitude)
+        }
+
         val cameraPosition = CameraPosition.Builder()
-            .target(LatLng(48.8716954, 2.3185572)) // Sets the center of the map to
+            .target(latLng) // Sets the center of the map to
             .zoom(15f) // Sets the zoom
             .bearing(90f) // Sets the orientation of the camera to east
             .tilt(90f) // Sets the tilt of the camera to 30 degrees

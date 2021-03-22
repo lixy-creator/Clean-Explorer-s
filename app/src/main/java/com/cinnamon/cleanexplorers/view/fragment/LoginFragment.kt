@@ -12,17 +12,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.cinnamon.cleanexplorers.CleanExplorersApplication
-import com.cinnamon.cleanexplorers.databinding.FragmentLoginBinding
 import com.cinnamon.cleanexplorers.database.entity.LocalUser
+import com.cinnamon.cleanexplorers.databinding.FragmentLoginBinding
 import com.cinnamon.cleanexplorers.utils.Constant
-import com.cinnamon.cleanexplorers.view.viewmodel.UserViewModel
-import com.cinnamon.cleanexplorers.view.viewmodel.UserViewModelFactory
+import com.cinnamon.cleanexplorers.view.viewmodel.LoginViewModel
+import com.cinnamon.cleanexplorers.view.viewmodel.LoginViewModelFactory
 import com.facebook.*
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import org.json.JSONException
@@ -39,8 +38,8 @@ class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
 
-    private val userViewModel: UserViewModel by viewModels {
-        UserViewModelFactory((requireContext().applicationContext as CleanExplorersApplication).userRepository)
+    private val viewModel: LoginViewModel by viewModels {
+        LoginViewModelFactory((requireContext().applicationContext as CleanExplorersApplication).userRepository)
     }
     private lateinit var callbackManager: CallbackManager
     override fun onCreateView(
@@ -54,6 +53,7 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         loginFacebook()
+        setViewModel()
         initListener()
     }
 
@@ -85,18 +85,40 @@ class LoginFragment : Fragment() {
             })
     }
 
+    private fun setViewModel() {
+        viewModel.intentGoogle.observe(viewLifecycleOwner) {
+            it?.let {
+                startActivityForResult(it, RC_SIGN_IN)
+            }
+        }
+        viewModel.errorOnLogin.observe(viewLifecycleOwner) {
+            binding.textInputLayoutLogin.error = it
+            binding.textInputLayoutLogin.isErrorEnabled = it != null
+        }
+        viewModel.errorOnPassword.observe(viewLifecycleOwner) {
+            binding.textInputLayoutPwd.error = it
+            binding.textInputLayoutPwd.isErrorEnabled = it != null
+        }
+    }
+
     private fun initListener() {
         binding.googleButton.setOnClickListener {
             binding.loadingLayout.loading.isVisible = true
-            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build()
-            val mGoogleSignInClient = GoogleSignIn.getClient(requireContext(), gso)
-            val signInIntent: Intent = mGoogleSignInClient.signInIntent
-            startActivityForResult(signInIntent, RC_SIGN_IN)
+            viewModel.onGoogleClicked(requireContext())
         }
         binding.facebookButton.setOnClickListener {
             binding.loadingLayout.loading.isVisible = true
+        }
+
+        binding.subscribeText.setOnClickListener {
+            binding.loadingLayout.loading.isVisible = true
+            goToSubscribe()
+        }
+
+        binding.connexionButton.setOnClickListener {
+            val login = binding.editTextLogin.text.toString()
+            val password = binding.editTextPassword.text.toString()
+            viewModel.validateField(requireContext(), login, password)
         }
     }
 
@@ -131,7 +153,7 @@ class LoginFragment : Fragment() {
                     account.idToken,
                     Constant.GOOGLE
                 )
-            userViewModel.insert(user)
+            viewModel.insert(user)
             goToHome()
         } catch (e: ApiException) {
             Log.e(TAG, "signInResult:failed code= ${e.statusCode}")
@@ -149,7 +171,7 @@ class LoginFragment : Fragment() {
                 val email: String = obj.getString("email")
                 val id: String = obj.getString("id")
                 val user = LocalUser(id, pseudo, email, currentAccessToken.token, Constant.FACEBOOK)
-                userViewModel.insert(user)
+                viewModel.insert(user)
                 goToHome()
 
             } catch (e: JSONException) {
@@ -166,6 +188,16 @@ class LoginFragment : Fragment() {
     private fun goToHome() {
         val direction = LoginFragmentDirections.actionLoginFragmentToHomeFragment()
         findNavController().navigate(direction)
+    }
+
+    private fun goToSubscribe() {
+        val direction = LoginFragmentDirections.actionLoginFragmentToSubscribeFragment()
+        findNavController().navigate(direction)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
 }

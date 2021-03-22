@@ -6,6 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".view.fragment.ScannerBarcodeFragment">
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/close_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/green_light"
+        app:srcCompat="@drawable/ic_close"
+        app:backgroundTint="@color/white"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="20dp"
+        app:tint="@color/green_light"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
     <View
         android:id="@+id/view_capture"
         android:layout_width="match_parent"
