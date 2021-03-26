@@ -39,7 +39,7 @@ class LoginFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: LoginViewModel by viewModels {
-        LoginViewModelFactory((requireContext().applicationContext as CleanExplorersApplication).userRepository)
+        LoginViewModelFactory((requireContext().applicationContext as CleanExplorersApplication).userRepository, this)
     }
     private lateinit var callbackManager: CallbackManager
     override fun onCreateView(
@@ -70,7 +70,7 @@ class LoginFragment : Fragment() {
             callbackManager,
             object : FacebookCallback<LoginResult> {
                 override fun onSuccess(loginResult: LoginResult) {
-                    getUserProfileFacebook(loginResult.accessToken)
+                    viewModel.getUserProfileFacebook(loginResult.accessToken)
                 }
 
                 override fun onCancel() {
@@ -86,6 +86,9 @@ class LoginFragment : Fragment() {
     }
 
     private fun setViewModel() {
+        viewModel.isLoading.observe(viewLifecycleOwner){
+            binding.loadingLayout.loading.isVisible =it
+        }
         viewModel.intentGoogle.observe(viewLifecycleOwner) {
             it?.let {
                 startActivityForResult(it, RC_SIGN_IN)
@@ -98,6 +101,11 @@ class LoginFragment : Fragment() {
         viewModel.errorOnPassword.observe(viewLifecycleOwner) {
             binding.textInputLayoutPwd.error = it
             binding.textInputLayoutPwd.isErrorEnabled = it != null
+        }
+        viewModel.errorGlobal.observe(viewLifecycleOwner){
+            it?.let{
+                Toast.makeText(requireContext(),it, Toast.LENGTH_LONG).show()
+            }
         }
     }
 
@@ -112,7 +120,7 @@ class LoginFragment : Fragment() {
 
         binding.subscribeText.setOnClickListener {
             binding.loadingLayout.loading.isVisible = true
-            goToSubscribe()
+           viewModel.goToSubscribe()
         }
 
         binding.connexionButton.setOnClickListener {
@@ -129,7 +137,7 @@ class LoginFragment : Fragment() {
         Log.w(TAG, "RequestCode : $requestCode")
         if (requestCode == RC_SIGN_IN) {
             val result = GoogleSignIn.getSignedInAccountFromIntent(data)
-            handleSignInResult(result)
+            viewModel.handleSignInResultGoogle(result)
 
             if (result.isSuccessful) {
                 Toast.makeText(requireContext(), "Sign is success", Toast.LENGTH_LONG).show()
@@ -141,64 +149,6 @@ class LoginFragment : Fragment() {
         }
     }
 
-    private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
-        try {
-            val account = completedTask.getResult(ApiException::class.java)
-
-            val user =
-                LocalUser(
-                    account.id!!,
-                    account.givenName!!,
-                    account.email!!,
-                    account.idToken,
-                    Constant.GOOGLE,)
-            viewModel.insert(user)
-            goToHome()
-        } catch (e: ApiException) {
-            Log.e(TAG, "signInResult:failed code= ${e.statusCode}")
-        }
-    }
-
-
-    private fun getUserProfileFacebook(currentAccessToken: AccessToken) {
-        val request = GraphRequest.newMeRequest(
-            currentAccessToken
-        ) { obj, _ ->
-            Log.w(TAG, obj.toString())
-            try {
-                val pseudo: String = obj.getString("first_name")
-                val email: String = obj.getString("email")
-                val id: String = obj.getString("id")
-                val user = LocalUser(
-                    id,
-                    pseudo,
-                    email,
-                    currentAccessToken.token,
-                    Constant.FACEBOOK
-                )
-                viewModel.insert(user)
-                goToHome()
-
-            } catch (e: JSONException) {
-                Log.e(TAG, "Error JSON Parse : ${e.message}")
-            }
-        }
-
-        val parameters = Bundle()
-        parameters.putString("fields", "first_name,email,id")
-        request.parameters = parameters
-        request.executeAsync()
-    }
-
-    private fun goToHome() {
-        val direction = LoginFragmentDirections.actionLoginFragmentToHomeFragment()
-        findNavController().navigate(direction)
-    }
-
-    private fun goToSubscribe() {
-        val direction = LoginFragmentDirections.actionLoginFragmentToSubscribeFragment()
-        findNavController().navigate(direction)
-    }
 
     override fun onDestroy() {
         super.onDestroy()

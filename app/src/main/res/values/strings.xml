@@ -47,5 +47,9 @@
     <string name="error_email">Adresse mail incorrecte</string>
     <string name="error_date_birth">Date de naissance incorrecte</string>
     <string name="error_password_confirmation">Les mot de passe ne sont pas identiques</string>
+    <string name="error_wrong_login">Login ou mot de passe incorrect</string>
+    <string name="error_unknown">Une erreur inconnu est survenue</string>
+    <string name="error_email_existed">Cette adresse mail est déjà utilisée</string>
+    <string name="retry">Réessayer</string>
 
 </resources>

@@ -163,14 +163,13 @@
                     android:paddingHorizontal="5dp"
                     android:paddingVertical="10dp"
                     android:text="@string/subscribe_text"
-                    android:textColor="@color/green_light"
+                    android:textColor="@color/blue_light"
                     android:textStyle="bold" />
             </LinearLayout>
 
     <include
         android:id="@+id/loading_layout"
-        layout="@layout/loading_layout"
-        android:visibility="gone" />
+        layout="@layout/loading_layout" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

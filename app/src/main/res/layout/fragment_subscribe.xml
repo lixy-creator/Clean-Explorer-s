@@ -23,7 +23,7 @@
             <ImageView
                 android:id="@+id/logo"
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
+                android:layout_height="200dp"
                 android:src="@drawable/logo"
                 app:layout_constraintStart_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -154,9 +154,9 @@
                     android:id="@+id/edit_text_passConf"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:imeOptions="actionNext"
+                    android:imeOptions="actionDone"
                     android:inputType="textPassword"
-                    android:nextFocusForward="@id/edit_text_password" />
+                    android:nextFocusDown="@id/subscribe_button" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button
@@ -172,58 +172,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/text_input_layout_passConf" />
 
-            <View
-                android:id="@+id/view"
-                android:layout_width="150dp"
-                android:layout_height="1dp"
-                android:layout_marginTop="40dp"
-                android:background="@color/grey"
-                app:layout_constraintStart_toEndOf="@id/textView_or"
-                app:layout_constraintTop_toBottomOf="@+id/subscribe_button" />
-
-            <View
-                android:id="@+id/view2"
-                android:layout_width="150dp"
-                android:layout_height="1dp"
-                android:layout_marginTop="40dp"
-                android:background="@color/grey"
-                app:layout_constraintEnd_toStartOf="@+id/textView_or"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/subscribe_button" />
-
-            <TextView
-                android:id="@+id/textView_or"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:paddingHorizontal="10dp"
-                android:text="@string/or"
-                android:textAlignment="center"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/subscribe_button" />
-
-
-            <com.google.android.gms.common.SignInButton
-                android:id="@+id/googleButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/facebookButton" />
-
-            <com.facebook.login.widget.LoginButton
-                android:id="@+id/facebookButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView_or" />
-
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -231,7 +179,7 @@
                 android:layout_marginBottom="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/googleButton">
+                app:layout_constraintTop_toBottomOf="@+id/subscribe_button">
 
                 <TextView
                     android:id="@+id/text_account_yet"
@@ -245,7 +193,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:text="@string/connect_title"
-                    android:textColor="@color/green_light"
+                    android:textColor="@color/blue_light"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -254,8 +202,7 @@
 
     <include
         android:id="@+id/loading_layout"
-        layout="@layout/loading_layout"
-        android:visibility="gone" />
+        layout="@layout/loading_layout" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
