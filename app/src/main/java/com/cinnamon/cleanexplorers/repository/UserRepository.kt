@@ -36,7 +36,7 @@ class UserRepository(private val userDao: UserDao) {
     suspend fun createUser(newUser: NewUser): Result<Unit, Throwable> {
         return when (val response = dataSource.createUser(newUser)) {
             is Success -> {
-                Success(value = response.value.run { this })
+                Success(value = response.value)
             }
             is Failure -> {
                 when ((response.reason as? HttpException)?.code()) {
@@ -49,7 +49,7 @@ class UserRepository(private val userDao: UserDao) {
     suspend fun checkEmail(email: Email): Result<Unit, Throwable> {
         return when (val response = dataSource.checkEmail(email)) {
             is Success -> {
-                Success(value = response.value.run { this })
+                Success(value = response.value)
             }
             is Failure -> {
                 Failure(TechnicalException(response.reason))
