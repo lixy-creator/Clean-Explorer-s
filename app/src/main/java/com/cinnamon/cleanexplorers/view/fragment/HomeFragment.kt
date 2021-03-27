@@ -18,10 +18,12 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.cinnamon.cleanexplorers.CleanExplorersApplication
 import com.cinnamon.cleanexplorers.R
+import com.cinnamon.cleanexplorers.api.model.CleanStop
 import com.cinnamon.cleanexplorers.databinding.FragmentHomeBinding
 import com.cinnamon.cleanexplorers.model.Location
 import com.cinnamon.cleanexplorers.service.manager.GpsManager
 import com.cinnamon.cleanexplorers.utils.Constant.GPS_REQUEST
+import com.cinnamon.cleanexplorers.view.fragment.adapter.MapInfoWindowAdapter
 import com.cinnamon.cleanexplorers.view.viewmodel.HomeViewModel
 import com.cinnamon.cleanexplorers.view.viewmodel.HomeViewModelFactory
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -33,7 +35,9 @@ import com.google.android.gms.maps.model.*
 class HomeFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveStartedListener,
     GoogleMap.OnCameraMoveListener,
     GoogleMap.OnCameraMoveCanceledListener,
-    GoogleMap.OnCameraIdleListener {
+    GoogleMap.OnCameraIdleListener,
+    GoogleMap.OnMarkerClickListener,
+    GoogleMap.OnInfoWindowClickListener {
 
     companion object {
         const val LOCATION_REQUEST = 100
@@ -43,6 +47,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveStart
     private val binding get() = _binding!!
 
     lateinit var map: GoogleMap
+    var markerLocation: Marker? = null
     var isFirstLocation = true
     private var myLocation: Location? = null
 
@@ -51,7 +56,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveStart
     private val viewModel: HomeViewModel by viewModels {
         HomeViewModelFactory(
             (requireContext().applicationContext as CleanExplorersApplication).userRepository,
-            (requireContext().applicationContext as CleanExplorersApplication).productRepository
+            (requireContext().applicationContext as CleanExplorersApplication).productRepository,
+            (requireActivity().applicationContext as CleanExplorersApplication).cleanStopRepository
         )
     }
 
@@ -89,7 +95,23 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveStart
         }
 
         viewModel.garbageNbr.observe(viewLifecycleOwner) {
-            binding.dashboardLayout.textRecap.text = resources.getQuantityString(R.plurals.countdown_result, it ?: 0, it ?: 0)
+            binding.dashboardLayout.textRecap.text =
+                resources.getQuantityString(R.plurals.countdown_result, it ?: 0, it ?: 0)
+        }
+
+    }
+
+    private fun addCleanStop() {
+        viewModel.listCleanStop.observe(viewLifecycleOwner) {
+            it?.forEach { cleanStop ->
+                val marker = map.addMarker(
+                    MarkerOptions()
+                        .position(LatLng(cleanStop.latitude, cleanStop.longitude))
+                        .title(cleanStop.name)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_cleanstop))
+                )
+                marker.tag = cleanStop
+            }
         }
     }
 
@@ -97,14 +119,14 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveStart
         binding.fabMenu.setOnClickListener {
             binding.dashboardLayout.layoutTool.isVisible = true
             binding.fabMenu.isVisible = false
-            binding.scannerButton.isVisible=false
+            binding.scannerButton.isVisible = false
             map.uiSettings.setAllGesturesEnabled(false)
         }
 
         binding.dashboardLayout.buttonClose.setOnClickListener {
             binding.dashboardLayout.layoutTool.isVisible = false
             binding.fabMenu.isVisible = true
-            binding.scannerButton.isVisible=true
+            binding.scannerButton.isVisible = true
             map.uiSettings.setAllGesturesEnabled(true)
         }
 
@@ -169,14 +191,13 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveStart
 
     private fun startLocationUpdate() {
         viewModel.getLocationData(requireContext()).observe(viewLifecycleOwner) {
-            map.clear()
+            markerLocation?.remove()
             myLocation = it
             val latLng = LatLng(it.latitude, it.longitude)
             val markerOptions = MarkerOptions()
                 .position(latLng)
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
-                .draggable(true)
-            map.addMarker(markerOptions)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_person))
+            markerLocation = map.addMarker(markerOptions)
             if (isFirstLocation) {
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 20.0f))
                 isFirstLocation = false
@@ -211,8 +232,11 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveStart
             .bearing(90f) // Sets the orientation of the camera to east
             .tilt(90f) // Sets the tilt of the camera to 30 degrees
             .build()
-
         map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+        addCleanStop()
+        map.setInfoWindowAdapter(MapInfoWindowAdapter(requireContext()))
+        map.setOnMarkerClickListener(this)
+        map.setOnInfoWindowClickListener(this)
     }
 
     private fun getAlertDialog() {
@@ -314,6 +338,18 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveStart
     override fun onCameraMoveCanceled() {}
 
     override fun onCameraIdle() {}
+
+    override fun onMarkerClick(marker: Marker?): Boolean {
+        if (marker?.tag !is CleanStop) return true
+        return false
+    }
+
+    override fun onInfoWindowClick(marker: Marker?) {
+        val cleanStop = marker?.tag as? CleanStop ?: return
+        val destination =
+            HomeFragmentDirections.actionHomeFragmentToDetailCleanStopFragment(cleanStop)
+        findNavController().navigate(destination)
+    }
 
 
 }

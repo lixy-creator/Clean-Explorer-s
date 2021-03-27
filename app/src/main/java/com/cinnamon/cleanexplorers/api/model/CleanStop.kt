@@ -1,8 +1,11 @@
 package com.cinnamon.cleanexplorers.api.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+@Parcelize
 @Serializable
 data class CleanStop(
     @SerialName("id")
@@ -16,5 +19,5 @@ data class CleanStop(
     @SerialName("image")
     val image: String,
     @SerialName("description")
-    val description: String?,
-)
+    val description: String?=null,
+) : Parcelable

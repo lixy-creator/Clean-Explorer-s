@@ -59,6 +59,9 @@
         <action
             android:id="@+id/action_homeFragment_to_scannerFragment"
             app:destination="@id/scannerFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_detailCleanStopFragment"
+            app:destination="@id/detailCleanStopFragment" />
     </fragment>
 
     <fragment
@@ -84,6 +87,19 @@
         tools:layout="@layout/fragment_scanner_barcode">
         <action
             android:id="@+id/action_scannerFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/detailCleanStopFragment"
+        android:name="com.cinnamon.cleanexplorers.view.fragment.DetailCleanStopFragment"
+        android:label="fragment_detail_clean_stop"
+        tools:layout="@layout/fragment_detail_clean_stop">
+        <argument
+            android:name="cleanStop"
+            app:argType="com.cinnamon.cleanexplorers.api.model.CleanStop" />
+        <action
+            android:id="@+id/action_detailCleanStopFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
     </fragment>
 
