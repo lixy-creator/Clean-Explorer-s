@@ -23,7 +23,7 @@ import com.cinnamon.cleanexplorers.databinding.FragmentHomeBinding
 import com.cinnamon.cleanexplorers.model.Location
 import com.cinnamon.cleanexplorers.service.manager.GpsManager
 import com.cinnamon.cleanexplorers.utils.Constant.GPS_REQUEST
-import com.cinnamon.cleanexplorers.view.fragment.adapter.MapInfoWindowAdapter
+import com.cinnamon.cleanexplorers.view.adapter.MapInfoWindowAdapter
 import com.cinnamon.cleanexplorers.view.viewmodel.HomeViewModel
 import com.cinnamon.cleanexplorers.view.viewmodel.HomeViewModelFactory
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -150,6 +150,10 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveStart
         }
         binding.dashboardLayout.settingsButton.setOnClickListener {
             val direction = HomeFragmentDirections.actionHomeFragmentToSettingFragment()
+            this.findNavController().navigate(direction)
+        }
+        binding.dashboardLayout.taskButton.setOnClickListener{
+            val direction = HomeFragmentDirections.actionHomeFragmentToMissionFragment()
             this.findNavController().navigate(direction)
         }
 

@@ -62,6 +62,9 @@
         <action
             android:id="@+id/action_homeFragment_to_detailCleanStopFragment"
             app:destination="@id/detailCleanStopFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_missionFragment"
+            app:destination="@id/missionFragment" />
     </fragment>
 
     <fragment
@@ -108,4 +111,13 @@
         app:destination="@id/routingFragment"
         app:popUpTo="@id/nav_graph"
         app:popUpToInclusive="true" />
+    <fragment
+        android:id="@+id/missionFragment"
+        android:name="com.cinnamon.cleanexplorers.view.fragment.MissionFragment"
+        android:label="fragment_mission"
+        tools:layout="@layout/fragment_mission" >
+        <action
+            android:id="@+id/action_missionFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
 </navigation>
