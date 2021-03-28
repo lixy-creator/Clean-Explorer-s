@@ -45,8 +45,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             val user = it ?: return@observe
             when (user.type) {
                 Constant.FACEBOOK -> signOutFacebook()
-                Constant.GOOGLE ->
-                    signOutGoogle()
+                Constant.GOOGLE -> signOutGoogle()
                 Constant.DATABASE -> Unit
             }
         }

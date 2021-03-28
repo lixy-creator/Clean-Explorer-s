@@ -1,15 +1,11 @@
-package com.cinnamon.cleanexplorers.view.fragment.adapter
+package com.cinnamon.cleanexplorers.view.adapter
 
 import android.app.Activity
 import android.content.Context
 import android.view.View
-import android.widget.Button
 import android.widget.TextView
-import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import com.cinnamon.cleanexplorers.R
 import com.cinnamon.cleanexplorers.api.model.CleanStop
-import com.cinnamon.cleanexplorers.view.fragment.HomeFragmentDirections
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.Marker
 
