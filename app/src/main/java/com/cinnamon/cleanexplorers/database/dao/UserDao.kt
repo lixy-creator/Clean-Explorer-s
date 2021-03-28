@@ -18,4 +18,7 @@ interface UserDao {
 
     @Query("SELECT * FROM user")
     fun getUser(): Flow<LocalUser?>
+
+    @Query("UPDATE user SET nbr_spot_seen=nbr_spot_seen+1")
+    suspend fun updateNbrCleanStop()
 }

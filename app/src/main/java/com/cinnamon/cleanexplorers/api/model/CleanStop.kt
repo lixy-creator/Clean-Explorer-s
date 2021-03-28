@@ -19,5 +19,7 @@ data class CleanStop(
     @SerialName("image")
     val image: String,
     @SerialName("description")
-    val description: String?=null,
+    val description: String? = null,
+    @SerialName("url")
+    val url: String
 ) : Parcelable
