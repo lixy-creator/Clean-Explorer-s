@@ -10,6 +10,6 @@ data class Garbage(
     val id: Int?=0,
     val name: String,
     val packaging: String,
-    val quantity: Int,
+    val quantity: Int?=0,
     val createDate: Date,
 )

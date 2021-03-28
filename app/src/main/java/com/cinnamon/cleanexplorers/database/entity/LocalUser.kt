@@ -18,4 +18,5 @@ data class LocalUser(
     val type: String,
     val dateBirth:Date?=null,
     val createDate: Date?=null,
+    val point:Int?=0,
 )
