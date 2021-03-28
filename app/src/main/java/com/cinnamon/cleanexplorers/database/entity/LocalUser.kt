@@ -1,6 +1,7 @@
 package com.cinnamon.cleanexplorers.database.entity
 
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.*
@@ -14,9 +15,11 @@ data class LocalUser(
     val id: String,
     val firstName: String,
     val email: String,
-    val token: String?=null,
+    val token: String? = null,
     val type: String,
-    val dateBirth:Date?=null,
-    val createDate: Date?=null,
-    val point:Int?=0,
+    val dateBirth: Date? = null,
+    val createDate: Date? = null,
+    val point: Int? = 0,
+    @ColumnInfo(name = "nbr_spot_seen")
+    val nbrCleanStopSeen: Int? = 0
 )

@@ -152,7 +152,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveStart
             val direction = HomeFragmentDirections.actionHomeFragmentToSettingFragment()
             this.findNavController().navigate(direction)
         }
-        binding.dashboardLayout.taskButton.setOnClickListener{
+        binding.dashboardLayout.taskButton.setOnClickListener {
             val direction = HomeFragmentDirections.actionHomeFragmentToMissionFragment()
             this.findNavController().navigate(direction)
         }
@@ -350,10 +350,10 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveStart
 
     override fun onInfoWindowClick(marker: Marker?) {
         val cleanStop = marker?.tag as? CleanStop ?: return
+        viewModel.updateNbrCleanStopSeen()
         val destination =
             HomeFragmentDirections.actionHomeFragmentToDetailCleanStopFragment(cleanStop)
         findNavController().navigate(destination)
     }
-
 
 }

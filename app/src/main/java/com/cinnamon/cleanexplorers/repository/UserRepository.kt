@@ -62,6 +62,10 @@ class UserRepository(private val userDao: UserDao) {
         userDao.insert(localUser)
     }
 
+    suspend fun updateNbrCleanStop() {
+        userDao.updateNbrCleanStop()
+    }
+
     suspend fun deleteAll() {
         userDao.deleteAll()
     }

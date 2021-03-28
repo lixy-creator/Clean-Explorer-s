@@ -46,17 +46,21 @@ class AccountFragment : Fragment() {
         viewModel.user.observe(viewLifecycleOwner) {
             it?.let { user ->
                 binding.firstNameText.text = user.firstName
-                val age = user.dateBirth?.getAge() ?: 0
-                binding.ageText.text = getString(R.string.info_age, age)
+                binding.emailText.text = user.email
+                binding.ageText.text = user.dateBirth?.let {
+                    getString(R.string.info_age, it.getAge())
+                } ?: "Age Introuvable"
                 val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                binding.dateCreateText.text =
+                binding.dateCreateText.text = user.createDate?.let {
                     getString(R.string.info_date_create, format.format(user.createDate))
+                } ?: "Date Introuvable"
                 binding.numberPointText.text = user.point.toString()
+
             }
         }
 
-        viewModel.garbageNbr.observe(viewLifecycleOwner){
-            binding.numberScanText.text=it?.toString()?:"0"
+        viewModel.garbageNbr.observe(viewLifecycleOwner) {
+            binding.numberScanText.text = it?.toString() ?: "0"
         }
     }
 

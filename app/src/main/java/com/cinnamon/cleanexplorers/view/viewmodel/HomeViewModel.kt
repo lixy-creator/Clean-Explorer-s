@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class HomeViewModel(
-    userRepository: UserRepository,
+    private val userRepository: UserRepository,
     productRepository: ProductRepository,
     private val cleanStopRepository: CleanStopRepository,
 ) : ViewModel() {
@@ -46,6 +46,12 @@ class HomeViewModel(
                     }
                 }
             }
+        }
+    }
+
+    fun updateNbrCleanStopSeen() {
+        viewModelScope.launch {
+            userRepository.updateNbrCleanStop()
         }
     }
 

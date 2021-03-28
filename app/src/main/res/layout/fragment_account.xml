@@ -21,7 +21,6 @@
         android:id="@+id/firstName_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Prenom"
         android:textAlignment="center"
         android:textSize="18dp"
         android:textStyle="bold"
@@ -35,7 +34,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
-        android:text="Age"
         android:textAlignment="center"
         app:layout_constraintBaseline_toBaselineOf="@+id/date_create_text"
         app:layout_constraintEnd_toStartOf="@+id/date_create_text"
@@ -48,7 +46,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="10dp"
-        android:text="Date Creation"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/age_text"
@@ -62,15 +59,26 @@
         app:constraint_referenced_ids="age_text,date_create_text"
         tools:layout_editor_absoluteY="1085dp" />
 
+    <TextView
+        android:id="@+id/email_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/barrier_info_user" />
+
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/number_scan_card"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:layout_marginTop="20dp"
+        android:elevation="5dp"
         app:layout_constraintEnd_toStartOf="@+id/number_point_card"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/barrier_info_user">
+        app:layout_constraintTop_toBottomOf="@+id/email_text">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -100,10 +108,11 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:layout_marginTop="20dp"
+        android:elevation="5dp"
         android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/number_scan_card"
-        app:layout_constraintTop_toBottomOf="@+id/barrier_info_user">
+        app:layout_constraintTop_toBottomOf="@+id/email_text">
 
         <LinearLayout
             android:layout_width="match_parent"
