@@ -71,7 +71,11 @@
         android:id="@+id/accountFragment"
         android:name="com.cinnamon.cleanexplorers.view.fragment.AccountFragment"
         android:label="fragment_account"
-        tools:layout="@layout/fragment_account" />
+        tools:layout="@layout/fragment_account" >
+        <action
+            android:id="@+id/action_accountFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/settingFragment"
