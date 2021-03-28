@@ -1,10 +1,13 @@
 package com.cinnamon.cleanexplorers.view.fragment
 
+import android.content.Intent
+import android.content.Intent.ACTION_VIEW
+import android.content.Intent.CATEGORY_BROWSABLE
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.cinnamon.cleanexplorers.CleanExplorersApplication
@@ -29,13 +32,25 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences, rootKey)
-        val volumePreference: ListPreference? =
-            findPreference(getString(R.string.pref_volume_key))
-
         val preferenceLogout: Preference? =
             findPreference(getString(R.string.pref_logout_key))
         preferenceLogout?.setOnPreferenceClickListener {
             onDisconnectClicked()
+            true
+        }
+
+        val socialPreference: Preference? =
+            findPreference(getString(R.string.pref_social_key))
+        socialPreference?.setOnPreferenceClickListener {
+            goToWebSite("https://www.instagram.com/cleanexplorers/")
+
+            true
+        }
+        val sitePreference: Preference? =
+            findPreference(getString(R.string.pref_site_key))
+
+        sitePreference?.setOnPreferenceClickListener {
+            goToWebSite("https://cleanexplorers.jeprojet.com/")
             true
         }
     }
@@ -52,6 +67,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
         userViewModel.delete()
         val direction = SettingsFragmentDirections.actionGlobalRoutingFragment()
         findNavController().navigate(direction)
+    }
+
+    private fun goToWebSite(url: String) {
+        val browserIntent = Intent(CATEGORY_BROWSABLE, Uri.parse(url))
+        browserIntent.action = ACTION_VIEW
+        startActivity(browserIntent)
     }
 
     private fun signOutGoogle() {
