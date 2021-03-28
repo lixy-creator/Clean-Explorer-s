@@ -15,15 +15,15 @@
         <item quantity="one"> Vous avez scanné : %d Déchet aujourd\'hui</item>
         <item quantity="other"> Vous avez scanné : %d Déchets aujourd\'hui</item>
     </plurals>
-    <string name="pref_volume_title">Volume</string>
-    <string name="pref_volume_key">volume</string>
+    <string name="pref_social_title">Suivez l\'actualité</string>
+    <string name="pref_social_key">social network</string>
+    <string name="pref_social_summary">Retrouvez-nous sur Instagram</string>
+    <string name="pref_site_title">Site Officiel de Clean Explorer\'s</string>
+    <string name="pref_site_key">site web</string>
     <string name="pref_logout_title">Déconnexion</string>
     <string name="pref_logout_summary">Se déconnecter</string>
     <string name="pref_logout_key">disconnect</string>
-    <string-array name="pref_volume_entries">
-        <item>Musique</item>
-        <item>Effets Sonores</item>
-    </string-array>
+
     <string name="ok">OK</string>
     <string name="error_permission">Afin d\'utiliser notre application et de bénéficier de la meilleure expèrience. \nVeuillez autoriser Clean Explorer\'s à accéder à votre localisation </string>
     <string name="error_location_title">Où êtes-vous ?</string>
