@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.cinnamon.cleanexplorers.CleanExplorersApplication
@@ -22,12 +23,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
-    private val userViewModel: UserViewModel by viewModels {
+    private val viewModel: UserViewModel by viewModels {
         UserViewModelFactory((requireContext().applicationContext as CleanExplorersApplication).userRepository)
     }
 
+    private val args: SettingsFragmentArgs by navArgs()
+    private lateinit var userId: String
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        userId = args.userId
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -43,7 +48,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
             findPreference(getString(R.string.pref_social_key))
         socialPreference?.setOnPreferenceClickListener {
             goToWebSite("https://www.instagram.com/cleanexplorers/")
-
             true
         }
         val sitePreference: Preference? =
@@ -56,7 +60,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun onDisconnectClicked() {
-        userViewModel.localUser.observe(viewLifecycleOwner) {
+        viewModel.getUserLocal(userId).observe(viewLifecycleOwner) {
             val user = it ?: return@observe
             when (user.type) {
                 Constant.FACEBOOK -> signOutFacebook()
@@ -64,7 +68,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 Constant.DATABASE -> Unit
             }
         }
-        userViewModel.delete()
+        viewModel.disconnectUser(userId)
         val direction = SettingsFragmentDirections.actionGlobalRoutingFragment()
         findNavController().navigate(direction)
     }

@@ -7,11 +7,26 @@ import com.cinnamon.cleanexplorers.api.model.Mission
 import com.cinnamon.cleanexplorers.api.model.Result
 import com.cinnamon.cleanexplorers.api.model.Success
 import com.cinnamon.cleanexplorers.api.service.ApiClientImpl
+import com.cinnamon.cleanexplorers.database.dao.MissionDao
+import com.cinnamon.cleanexplorers.database.entity.MissionEntity
+import kotlinx.coroutines.flow.Flow
 import okhttp3.OkHttpClient
 
-class MissionRepository {
+class MissionRepository(private val missionDao: MissionDao) {
 
     private val dataSource = MissionDataSource(ApiClientImpl(okHttpClient = OkHttpClient(), false))
+
+    suspend fun validateMission(userId: String, missionId: Long) {
+        missionDao.validateMission(userId, missionId)
+    }
+
+    suspend fun insertMission(missions: List<MissionEntity>) {
+        missionDao.insert(missions)
+    }
+
+    fun getMissionByUser(userId: String): Flow<List<MissionEntity>> {
+        return missionDao.getMissionByUser(userId)
+    }
 
     suspend fun getGlobalMission(): Result<List<Mission>, Throwable> {
         return when (val response = dataSource.getGlobalMission()) {

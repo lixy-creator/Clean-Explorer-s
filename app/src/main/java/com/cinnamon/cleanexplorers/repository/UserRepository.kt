@@ -1,13 +1,14 @@
 package com.cinnamon.cleanexplorers.repository
 
 import androidx.annotation.WorkerThread
+import androidx.lifecycle.LiveData
 import com.cinnamon.cleanexplorers.api.datasource.UserDataSource
 import com.cinnamon.cleanexplorers.api.exception.TechnicalException
 import com.cinnamon.cleanexplorers.api.exception.WrongLoginOrPassword
 import com.cinnamon.cleanexplorers.api.model.*
 import com.cinnamon.cleanexplorers.api.service.ApiClientImpl
 import com.cinnamon.cleanexplorers.database.dao.UserDao
-import com.cinnamon.cleanexplorers.database.entity.LocalUser
+import com.cinnamon.cleanexplorers.database.entity.UserEntity
 import kotlinx.coroutines.flow.Flow
 import okhttp3.OkHttpClient
 import retrofit2.HttpException
@@ -16,7 +17,19 @@ class UserRepository(private val userDao: UserDao) {
 
     private val dataSource = UserDataSource(ApiClientImpl(okHttpClient = OkHttpClient(), false))
 
-    val localUser: Flow<LocalUser?> = userDao.getUser()
+    fun getUserLocal(userId: String) = userDao.getUser(userId)
+
+    fun getNbrCleanStop(userId: String) = userDao.getNbrCleanStop(userId)
+
+    fun isExistsUser(userId: String): Flow<Boolean> {
+        return userDao.exists(userId)
+    }
+
+    fun getNbrConnexion(userId: String): LiveData<Int> {
+        return userDao.getNbrConnexion(userId)
+    }
+
+    val userConnected = userDao.getUserConnected()
 
     suspend fun getUserApi(login: String, password: String): Result<User, Throwable> {
         val requestLogin = RequestLogin(login, password)
@@ -58,12 +71,24 @@ class UserRepository(private val userDao: UserDao) {
     }
 
     @WorkerThread
-    suspend fun insert(localUser: LocalUser) {
+    suspend fun insert(localUser: UserEntity) {
         userDao.insert(localUser)
     }
 
-    suspend fun updateNbrCleanStop() {
-        userDao.updateNbrCleanStop()
+    suspend fun addPointUser(userId: String, point: Int) {
+        userDao.addPointUser(userId, point)
+    }
+
+    suspend fun setConnectUser(userId: String, connected: Boolean) {
+        userDao.setConnectUser(userId, connected)
+    }
+
+    suspend fun setNbrConnexion(userId: String) {
+        userDao.setNbrConnexion(userId)
+    }
+
+    suspend fun setNbrCleanStop(userId: String) {
+        userDao.setNbrCleanStop(userId)
     }
 
     suspend fun deleteAll() {

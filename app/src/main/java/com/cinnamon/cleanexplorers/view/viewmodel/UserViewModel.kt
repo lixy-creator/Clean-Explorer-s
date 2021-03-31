@@ -1,17 +1,19 @@
-package com.cinnamon.cleanexplorers.view.viewmodel;
+package com.cinnamon.cleanexplorers.view.viewmodel
 
-import androidx.lifecycle.*
-import com.cinnamon.cleanexplorers.database.entity.LocalUser
-import com.cinnamon.cleanexplorers.repository.UserRepository;
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
+import com.cinnamon.cleanexplorers.repository.UserRepository
 import kotlinx.coroutines.launch
 
 class UserViewModel(private val repository: UserRepository) : ViewModel() {
 
+    val userConnected = repository.userConnected.asLiveData()
+    fun getUserLocal(userId: String) = repository.getUserLocal(userId).asLiveData()
 
-    val localUser: LiveData<LocalUser?> = repository.localUser.asLiveData()
-
-    fun delete() = viewModelScope.launch {
-        repository.deleteAll()
+    fun disconnectUser(userId: String) = viewModelScope.launch {
+        repository.setConnectUser(userId, false)
     }
 }
 

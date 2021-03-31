@@ -17,6 +17,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.cinnamon.cleanexplorers.CleanExplorersApplication
 import com.cinnamon.cleanexplorers.R
@@ -35,6 +36,9 @@ class ScannerBarcodeFragment : Fragment() {
 
     private var _binding: FragmentScannerBarcodeBinding? = null
     private val binding get() = _binding!!
+
+    private val args: ScannerBarcodeFragmentArgs by navArgs()
+    private lateinit var userId: String
 
     private var processingBarcode = AtomicBoolean(false)
 
@@ -61,6 +65,7 @@ class ScannerBarcodeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        userId = args.userId
         checkPermissionCamera()
         setViewModel()
         setListener()
@@ -106,7 +111,7 @@ class ScannerBarcodeFragment : Fragment() {
             val name = binding.detailProductLayout.nameInfo.text.toString()
             val packaging = binding.detailProductLayout.packagingInfo.text.toString()
             val quantity = binding.detailProductLayout.quantityInfo.text.toString().toInt()
-            viewModel.insertGarbage(name, packaging, quantity)
+            viewModel.insertGarbage(name, packaging, quantity, userId)
            goToHome()
         }
 
@@ -192,7 +197,7 @@ class ScannerBarcodeFragment : Fragment() {
     }
 
     private fun goToHome(){
-        val direction = ScannerBarcodeFragmentDirections.actionScannerFragmentToHomeFragment()
+        val direction = ScannerBarcodeFragmentDirections.actionScannerFragmentToHomeFragment(userId)
         this.findNavController().navigate(direction)
     }
     override fun onResume() {

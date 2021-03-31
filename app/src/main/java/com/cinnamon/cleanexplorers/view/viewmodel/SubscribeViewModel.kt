@@ -12,7 +12,7 @@ import com.cinnamon.cleanexplorers.api.model.Email
 import com.cinnamon.cleanexplorers.api.model.Failure
 import com.cinnamon.cleanexplorers.api.model.NewUser
 import com.cinnamon.cleanexplorers.api.model.Success
-import com.cinnamon.cleanexplorers.database.entity.LocalUser
+import com.cinnamon.cleanexplorers.database.entity.UserEntity
 import com.cinnamon.cleanexplorers.repository.UserRepository
 import com.cinnamon.cleanexplorers.utils.Constant
 import com.cinnamon.cleanexplorers.utils.extension.getAge
@@ -96,17 +96,16 @@ class SubscribeViewModel(
                     val responseUser = userRepository.getUserApi(newUser.email, newUser.password)
                     if (responseUser is Success) {
                         val user = responseUser.value
-                        userRepository.insert(
-                            LocalUser(
-                                id = user.id.toString(),
+                        insertUser(
+                            UserEntity(
+                                userId = user.id.toString(),
                                 firstName = user.firstName,
                                 email = user.email,
                                 type = Constant.DATABASE,
-                                dateBirth = formatDateInput.parse(user.dateBirth),
+                                birthday = formatDateInput.parse(user.dateBirth),
                                 createDate = formatDateInput.parse(user.dateCreate),
                             )
                         )
-                        goToHome()
                     } else {
                         errorGlobal.postValue(context.getString(R.string.error_unknown))
                     }
@@ -126,8 +125,16 @@ class SubscribeViewModel(
         return matcher.matches()
     }
 
-    private fun goToHome() {
-        val direction = SubscribeFragmentDirections.actionSubscribeFragmentToHomeFragment()
+    private fun insertUser(localUser: UserEntity) {
+        viewModelScope.launch {
+            userRepository.insert(localUser)
+        }
+        goToHome(localUser.userId)
+    }
+
+    private fun goToHome(userId: String) {
+        val direction =
+            SubscribeFragmentDirections.actionSubscribeFragmentToHomeFragment(userId, true)
         navigationController.navigate(direction)
     }
 }

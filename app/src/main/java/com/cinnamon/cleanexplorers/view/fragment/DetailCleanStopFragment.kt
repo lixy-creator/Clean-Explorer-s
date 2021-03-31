@@ -23,6 +23,7 @@ class DetailCleanStopFragment : Fragment() {
 
     private val args: DetailCleanStopFragmentArgs by navArgs()
     private lateinit var cleanStop: CleanStop
+    private lateinit var userId: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,6 +41,7 @@ class DetailCleanStopFragment : Fragment() {
 
     private fun setView() {
         cleanStop = args.cleanStop
+        userId = args.userId
         requireActivity().window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN
@@ -61,7 +63,7 @@ class DetailCleanStopFragment : Fragment() {
         binding.cleanStopCloseButton.setOnClickListener {
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
             val destination =
-                DetailCleanStopFragmentDirections.actionDetailCleanStopFragmentToHomeFragment()
+                DetailCleanStopFragmentDirections.actionDetailCleanStopFragmentToHomeFragment(userId)
             findNavController().navigate(destination)
         }
 

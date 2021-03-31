@@ -10,21 +10,19 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import com.cinnamon.cleanexplorers.CleanExplorersApplication
-import com.cinnamon.cleanexplorers.database.entity.LocalUser
+import com.cinnamon.cleanexplorers.database.entity.UserEntity
 import com.cinnamon.cleanexplorers.databinding.FragmentLoginBinding
-import com.cinnamon.cleanexplorers.utils.Constant
+import com.cinnamon.cleanexplorers.utils.extension.isNowadays
 import com.cinnamon.cleanexplorers.view.viewmodel.LoginViewModel
 import com.cinnamon.cleanexplorers.view.viewmodel.LoginViewModelFactory
-import com.facebook.*
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.Profile
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.Task
-import org.json.JSONException
 
 
 class LoginFragment : Fragment() {
@@ -38,8 +36,13 @@ class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var userEntity: UserEntity
+
     private val viewModel: LoginViewModel by viewModels {
-        LoginViewModelFactory((requireContext().applicationContext as CleanExplorersApplication).userRepository, this)
+        LoginViewModelFactory(
+            (requireContext().applicationContext as CleanExplorersApplication).userRepository,
+            this
+        )
     }
     private lateinit var callbackManager: CallbackManager
     override fun onCreateView(
@@ -86,8 +89,8 @@ class LoginFragment : Fragment() {
     }
 
     private fun setViewModel() {
-        viewModel.isLoading.observe(viewLifecycleOwner){
-            binding.loadingLayout.loading.isVisible =it
+        viewModel.isLoading.observe(viewLifecycleOwner) {
+            binding.loadingLayout.loading.isVisible = it
         }
         viewModel.intentGoogle.observe(viewLifecycleOwner) {
             it?.let {
@@ -102,11 +105,26 @@ class LoginFragment : Fragment() {
             binding.textInputLayoutPwd.error = it
             binding.textInputLayoutPwd.isErrorEnabled = it != null
         }
-        viewModel.errorGlobal.observe(viewLifecycleOwner){
-            it?.let{
-                Toast.makeText(requireContext(),it, Toast.LENGTH_LONG).show()
+        viewModel.errorGlobal.observe(viewLifecycleOwner) {
+            it?.let {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
             }
         }
+        viewModel.userWantLogin.observe(viewLifecycleOwner) {
+            if (it.first) {
+                val user = it.second ?: return@observe
+                viewModel.isExistsUser(user.userId).observe(viewLifecycleOwner) { isExists ->
+                    if (isExists)
+                        if (!user.lastConnexionDate.isNowadays()) {
+                            viewModel.setNbrConnexion(user.userId)
+                            viewModel.goToHome(user.userId, true)
+                        } else
+                            viewModel.goToHome(user.userId, false)
+                    else viewModel.insertUser(user)
+                }
+            }
+        }
+
     }
 
     private fun initListener() {
@@ -120,7 +138,7 @@ class LoginFragment : Fragment() {
 
         binding.subscribeText.setOnClickListener {
             binding.loadingLayout.loading.isVisible = true
-           viewModel.goToSubscribe()
+            viewModel.goToSubscribe()
         }
 
         binding.connexionButton.setOnClickListener {
@@ -132,7 +150,7 @@ class LoginFragment : Fragment() {
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        callbackManager.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data)
         super.onActivityResult(requestCode, resultCode, data)
         Log.w(TAG, "RequestCode : $requestCode")
         if (requestCode == RC_SIGN_IN) {

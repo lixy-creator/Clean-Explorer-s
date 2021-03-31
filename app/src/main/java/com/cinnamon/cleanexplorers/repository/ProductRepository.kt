@@ -29,7 +29,7 @@ class ProductRepository(private val garbageDao: GarbageDao) {
         garbageDao.insert(garbage)
     }
 
-     fun getAllGarbage(): Flow<Int> {
-        return garbageDao.getAllGarbage()
+    fun getAllGarbage(userId: String): Flow<Int> {
+        return garbageDao.getAllGarbage(userId)
     }
 }

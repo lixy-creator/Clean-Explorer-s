@@ -35,13 +35,13 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
         android:textAlignment="center"
-        app:layout_constraintBaseline_toBaselineOf="@+id/date_create_text"
-        app:layout_constraintEnd_toStartOf="@+id/date_create_text"
+        app:layout_constraintBaseline_toBaselineOf="@+id/email_text"
+        app:layout_constraintEnd_toStartOf="@+id/email_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/firstName_text" />
 
     <TextView
-        android:id="@+id/date_create_text"
+        android:id="@+id/email_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -56,11 +56,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="age_text,date_create_text"
+        app:constraint_referenced_ids="age_text,email_text"
         tools:layout_editor_absoluteY="1085dp" />
 
     <TextView
-        android:id="@+id/email_text"
+        android:id="@+id/date_create_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -78,7 +78,7 @@
         android:elevation="5dp"
         app:layout_constraintEnd_toStartOf="@+id/number_point_card"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/email_text">
+        app:layout_constraintTop_toBottomOf="@+id/date_create_text">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -112,7 +112,7 @@
         android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/number_scan_card"
-        app:layout_constraintTop_toBottomOf="@+id/email_text">
+        app:layout_constraintTop_toBottomOf="@+id/date_create_text">
 
         <LinearLayout
             android:layout_width="match_parent"

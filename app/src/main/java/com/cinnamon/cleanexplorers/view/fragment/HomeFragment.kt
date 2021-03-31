@@ -16,9 +16,11 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.cinnamon.cleanexplorers.CleanExplorersApplication
 import com.cinnamon.cleanexplorers.R
 import com.cinnamon.cleanexplorers.api.model.CleanStop
+import com.cinnamon.cleanexplorers.database.entity.MissionEntity
 import com.cinnamon.cleanexplorers.databinding.FragmentHomeBinding
 import com.cinnamon.cleanexplorers.model.Location
 import com.cinnamon.cleanexplorers.service.manager.GpsManager
@@ -46,6 +48,10 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveStart
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
+    private val args: HomeFragmentArgs by navArgs()
+    private lateinit var userId: String
+    private var newConnect = false
+
     lateinit var map: GoogleMap
     var markerLocation: Marker? = null
     var isFirstLocation = true
@@ -53,13 +59,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveStart
 
     var isGPSEnabled = false
 
-    private val viewModel: HomeViewModel by viewModels {
-        HomeViewModelFactory(
-            (requireContext().applicationContext as CleanExplorersApplication).userRepository,
-            (requireContext().applicationContext as CleanExplorersApplication).productRepository,
-            (requireActivity().applicationContext as CleanExplorersApplication).cleanStopRepository
-        )
-    }
+    private lateinit var viewModel: HomeViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -72,6 +72,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveStart
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        userId = args.userId
+        newConnect = args.newConnect
         initGps()
         setView(savedInstanceState)
         setListener()
@@ -80,6 +82,16 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveStart
 
 
     private fun setView(bundle: Bundle?) {
+        val homeViewModel: HomeViewModel by viewModels {
+            HomeViewModelFactory(
+                (requireContext().applicationContext as CleanExplorersApplication).userRepository,
+                (requireContext().applicationContext as CleanExplorersApplication).productRepository,
+                (requireActivity().applicationContext as CleanExplorersApplication).cleanStopRepository,
+                (requireActivity().applicationContext as CleanExplorersApplication).missionRepository,
+                userId
+            )
+        }
+        viewModel = homeViewModel
         binding.map.onCreate(bundle)
         binding.map.getMapAsync(this)
         binding.centerButton.isVisible = false
@@ -87,18 +99,58 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveStart
     }
 
     private fun setViewModel() {
-        viewModel.localUser.observe(viewLifecycleOwner) {
+        viewModel.getUserLocal().observe(viewLifecycleOwner) {
             it?.let { user ->
                 binding.dashboardLayout.homeTitle.text =
                     getString(R.string.home_title, user.firstName)
             }
         }
 
-        viewModel.garbageNbr.observe(viewLifecycleOwner) {
+        viewModel.getNbrConnexion().observe(viewLifecycleOwner) {
+            if (it == 0) {
+                viewModel.getMissionGlobal()
+                viewModel.setNbrConnexion()
+                return@observe
+            }
+            if (newConnect && it < 7) {
+                viewModel.addPointUser(it)
+                newConnect = false
+                //TODO Animation
+            }
+        }
+        viewModel.getGarbageNbr().observe(viewLifecycleOwner) {
+            val nbr = it ?: 0
             binding.dashboardLayout.textRecap.text =
-                resources.getQuantityString(R.plurals.countdown_result, it ?: 0, it ?: 0)
+                resources.getQuantityString(
+                    R.plurals.countdown_result,
+                    nbr,
+                    nbr
+                )
         }
 
+        viewModel.listMissionCleanStop.observe(viewLifecycleOwner) { content ->
+            searchMissionToValidate(
+                content.first,
+                content.second.filter { it.name.contains("Clean-stop") },
+            )
+        }
+
+        viewModel.listMissionGarbage.observe(viewLifecycleOwner) { content ->
+            val number = content.first ?: return@observe
+            searchMissionToValidate(number, content.second.filter { it.name.contains("déchets") })
+        }
+    }
+
+    private fun searchMissionToValidate(number: Int, listMissionEntity: List<MissionEntity>) {
+        listMissionEntity.map {
+            if (number == 0) {
+                return@map
+            }
+            if (!it.valid && number >= it.nbrTime) {
+                viewModel.validateMission(it.missionId)
+                viewModel.addPointUser(it.point)
+            }
+        }
     }
 
     private fun addCleanStop() {
@@ -145,20 +197,20 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveStart
         }
 
         binding.dashboardLayout.accountButton.setOnClickListener {
-            val direction = HomeFragmentDirections.actionHomeFragmentToAccountFragment()
+            val direction = HomeFragmentDirections.actionHomeFragmentToAccountFragment(userId)
             this.findNavController().navigate(direction)
         }
         binding.dashboardLayout.settingsButton.setOnClickListener {
-            val direction = HomeFragmentDirections.actionHomeFragmentToSettingFragment()
+            val direction = HomeFragmentDirections.actionHomeFragmentToSettingFragment(userId)
             this.findNavController().navigate(direction)
         }
         binding.dashboardLayout.taskButton.setOnClickListener {
-            val direction = HomeFragmentDirections.actionHomeFragmentToMissionFragment()
+            val direction = HomeFragmentDirections.actionHomeFragmentToMissionFragment(userId)
             this.findNavController().navigate(direction)
         }
 
         binding.scannerButton.setOnClickListener {
-            val direction = HomeFragmentDirections.actionHomeFragmentToScannerFragment()
+            val direction = HomeFragmentDirections.actionHomeFragmentToScannerFragment(userId)
             this.findNavController().navigate(direction)
         }
     }
@@ -350,9 +402,9 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveStart
 
     override fun onInfoWindowClick(marker: Marker?) {
         val cleanStop = marker?.tag as? CleanStop ?: return
-        viewModel.updateNbrCleanStopSeen()
+        viewModel.setNbrCleanStopSeen()
         val destination =
-            HomeFragmentDirections.actionHomeFragmentToDetailCleanStopFragment(cleanStop)
+            HomeFragmentDirections.actionHomeFragmentToDetailCleanStopFragment(cleanStop, userId)
         findNavController().navigate(destination)
     }
 

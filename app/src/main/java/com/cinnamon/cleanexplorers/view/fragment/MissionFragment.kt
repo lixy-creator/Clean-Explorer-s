@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cinnamon.cleanexplorers.CleanExplorersApplication
@@ -20,6 +21,9 @@ class MissionFragment : Fragment() {
 
     private var _binding: FragmentMissionBinding? = null
     private val binding get() = _binding!!
+
+    private val args: MissionFragmentArgs by navArgs()
+    private lateinit var userId: String
 
     private val viewModel: MissionViewModel by viewModels {
         MissionViewModelFactory((requireContext().applicationContext as CleanExplorersApplication).missionRepository)
@@ -41,20 +45,24 @@ class MissionFragment : Fragment() {
     }
 
     private fun setView() {
+        userId = args.userId
         val layoutManager =  LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.listTask.layoutManager = layoutManager
         binding.listTask.itemAnimator = DefaultItemAnimator()
     }
 
     private fun setViewModel() {
-        viewModel.listMissionsGlobal.observe(viewLifecycleOwner) {
-            binding.listTask.adapter = MissionAdapter(it)
+        viewModel.getMissionByUser(userId).observe(viewLifecycleOwner) {
+            if (it.isEmpty()) {
+                viewModel.getMissionByUser(userId)
+            }
+            binding.listTask.adapter = MissionAdapter(requireContext(), it)
         }
     }
 
     private fun setListener() {
        binding.taskCloseButton.setOnClickListener {
-            val direction = MissionFragmentDirections.actionMissionFragmentToHomeFragment()
+           val direction = MissionFragmentDirections.actionMissionFragmentToHomeFragment(userId)
             this.findNavController().navigate(direction)
         }
     }

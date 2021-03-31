@@ -49,6 +49,15 @@
         android:name="com.cinnamon.cleanexplorers.view.fragment.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home">
+
+        <argument
+            android:name="userId"
+            app:argType="string" />
+
+        <argument
+            android:name="newConnect"
+            android:defaultValue="false"
+            app:argType="boolean" />
         <action
             android:id="@+id/action_homeFragment_to_accountFragment"
             app:destination="@id/accountFragment" />
@@ -71,7 +80,10 @@
         android:id="@+id/accountFragment"
         android:name="com.cinnamon.cleanexplorers.view.fragment.AccountFragment"
         android:label="fragment_account"
-        tools:layout="@layout/fragment_account" >
+        tools:layout="@layout/fragment_account">
+        <argument
+            android:name="userId"
+            app:argType="string" />
         <action
             android:id="@+id/action_accountFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
@@ -82,6 +94,9 @@
         android:name="com.cinnamon.cleanexplorers.view.fragment.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings">
+        <argument
+            android:name="userId"
+            app:argType="string" />
         <action
             android:id="@+id/action_settingFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
@@ -92,6 +107,9 @@
         android:name="com.cinnamon.cleanexplorers.view.fragment.ScannerBarcodeFragment"
         android:label="fragment_scanner_barcode"
         tools:layout="@layout/fragment_scanner_barcode">
+        <argument
+            android:name="userId"
+            app:argType="string" />
         <action
             android:id="@+id/action_scannerFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
@@ -105,6 +123,10 @@
         <argument
             android:name="cleanStop"
             app:argType="com.cinnamon.cleanexplorers.api.model.CleanStop" />
+
+        <argument
+            android:name="userId"
+            app:argType="string" />
         <action
             android:id="@+id/action_detailCleanStopFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
@@ -115,11 +137,15 @@
         app:destination="@id/routingFragment"
         app:popUpTo="@id/nav_graph"
         app:popUpToInclusive="true" />
+
     <fragment
         android:id="@+id/missionFragment"
         android:name="com.cinnamon.cleanexplorers.view.fragment.MissionFragment"
         android:label="fragment_mission"
-        tools:layout="@layout/fragment_mission" >
+        tools:layout="@layout/fragment_mission">
+        <argument
+            android:name="userId"
+            app:argType="string" />
         <action
             android:id="@+id/action_missionFragment_to_homeFragment"
             app:destination="@id/homeFragment" />

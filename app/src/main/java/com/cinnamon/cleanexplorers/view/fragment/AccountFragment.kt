@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.cinnamon.cleanexplorers.CleanExplorersApplication
 import com.cinnamon.cleanexplorers.R
 import com.cinnamon.cleanexplorers.databinding.FragmentAccountBinding
@@ -21,6 +22,10 @@ class AccountFragment : Fragment() {
 
     private var _binding: FragmentAccountBinding? = null
     private val binding get() = _binding!!
+
+    private val args: AccountFragmentArgs by navArgs()
+    private lateinit var userId: String
+
     private val viewModel: AccountViewModel by viewModels {
         AccountViewModelFactory(
             (requireContext().applicationContext as CleanExplorersApplication).userRepository,
@@ -43,11 +48,12 @@ class AccountFragment : Fragment() {
     }
 
     private fun setViewModel() {
-        viewModel.user.observe(viewLifecycleOwner) {
+        userId = args.userId
+        viewModel.getUserLocal(userId).observe(viewLifecycleOwner) {
             it?.let { user ->
                 binding.firstNameText.text = user.firstName
                 binding.emailText.text = user.email
-                binding.ageText.text = user.dateBirth?.let {
+                binding.ageText.text = user.birthday?.let {
                     getString(R.string.info_age, it.getAge())
                 } ?: "Age Introuvable"
                 val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
@@ -59,14 +65,14 @@ class AccountFragment : Fragment() {
             }
         }
 
-        viewModel.garbageNbr.observe(viewLifecycleOwner) {
+        viewModel.getGarbageNbr(userId).observe(viewLifecycleOwner) {
             binding.numberScanText.text = it?.toString() ?: "0"
         }
     }
 
     private fun setListener() {
         binding.accountCloseButton.setOnClickListener {
-            val direction = AccountFragmentDirections.actionAccountFragmentToHomeFragment()
+            val direction = AccountFragmentDirections.actionAccountFragmentToHomeFragment(userId)
             this.findNavController().navigate(direction)
         }
     }
