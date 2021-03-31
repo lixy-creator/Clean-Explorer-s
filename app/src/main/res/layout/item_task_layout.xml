@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
+    android:id="@+id/content_task_layout"
     android:background="@drawable/item_task_shape">
 
     <TextView

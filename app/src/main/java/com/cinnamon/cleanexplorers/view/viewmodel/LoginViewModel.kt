@@ -5,16 +5,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import androidx.navigation.fragment.findNavController
 import com.cinnamon.cleanexplorers.R
 import com.cinnamon.cleanexplorers.api.exception.WrongLoginOrPassword
 import com.cinnamon.cleanexplorers.api.model.Failure
 import com.cinnamon.cleanexplorers.api.model.Success
-import com.cinnamon.cleanexplorers.database.entity.LocalUser
+import com.cinnamon.cleanexplorers.database.entity.UserEntity
 import com.cinnamon.cleanexplorers.repository.UserRepository
 import com.cinnamon.cleanexplorers.utils.Constant
 import com.cinnamon.cleanexplorers.view.fragment.LoginFragment
@@ -44,8 +41,25 @@ class LoginViewModel(private val userRepository: UserRepository, private val fra
     val isLoading = MutableLiveData(false)
     private val format: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
-    private fun insert(localUser: LocalUser) = viewModelScope.launch {
-        userRepository.insert(localUser)
+    val userWantLogin = MutableLiveData<Pair<Boolean, UserEntity?>>()
+
+    fun isExistsUser(userId: String) = userRepository.isExistsUser(userId).asLiveData()
+
+    private fun checkUser(userEntity: UserEntity) {
+        userWantLogin.postValue(Pair(true, userEntity))
+    }
+
+    fun setNbrConnexion(id: String) {
+        viewModelScope.launch {
+            userRepository.setNbrConnexion(id)
+        }
+    }
+
+    fun insertUser(localUser: UserEntity) {
+        viewModelScope.launch {
+            userRepository.insert(localUser)
+        }
+        goToHome(localUser.userId, true)
     }
 
     fun validateField(context: Context, login: String, password: String) {
@@ -70,17 +84,17 @@ class LoginViewModel(private val userRepository: UserRepository, private val fra
             when (response) {
                 is Success -> {
                     val user = response.value
-                    insert(
-                        LocalUser(
-                            id = user.id.toString(),
+                    checkUser(
+                        UserEntity(
+                            userId = user.id.toString(),
                             firstName = user.firstName,
                             email = user.email,
                             type = Constant.DATABASE,
-                            dateBirth = format.parse(user.dateBirth),
+                            birthday = format.parse(user.dateBirth),
                             createDate = format.parse(user.dateCreate),
+                            connected = true,
                         )
                     )
-                    goToHome()
                 }
                 is Failure -> {
                     if (response.reason is WrongLoginOrPassword) {
@@ -104,15 +118,15 @@ class LoginViewModel(private val userRepository: UserRepository, private val fra
             val account = completedTask.getResult(ApiException::class.java)
 
             val user =
-                LocalUser(
-                    account.id!!,
-                    account.givenName!!,
-                    account.email!!,
-                    account.idToken,
-                    Constant.GOOGLE,
+                UserEntity(
+                    userId = account.id!!,
+                    firstName = account.givenName!!,
+                    email = account.email!!,
+                    token = account.idToken,
+                    type = Constant.GOOGLE,
+                    connected = true,
                 )
-            insert(user)
-            goToHome()
+            checkUser(user)
         } catch (e: ApiException) {
             Log.e(LoginFragment.TAG, "signInResult:failed code= ${e.statusCode}")
         }
@@ -127,15 +141,15 @@ class LoginViewModel(private val userRepository: UserRepository, private val fra
                 val pseudo: String = obj.getString("first_name")
                 val email: String = obj.getString("email")
                 val id: String = obj.getString("id")
-                val user = LocalUser(
-                    id,
-                    pseudo,
-                    email,
-                    currentAccessToken.token,
-                    Constant.FACEBOOK
+                val user = UserEntity(
+                    userId = id,
+                    firstName = pseudo,
+                    email = email,
+                    token = currentAccessToken.token,
+                    type = Constant.FACEBOOK,
+                    connected = true,
                 )
-                insert(user)
-                goToHome()
+                checkUser(user)
 
             } catch (e: JSONException) {
                 Log.e(LoginFragment.TAG, "Error JSON Parse : ${e.message}")
@@ -148,10 +162,15 @@ class LoginViewModel(private val userRepository: UserRepository, private val fra
         request.executeAsync()
     }
 
-    private fun goToHome() {
-        val direction = LoginFragmentDirections.actionLoginFragmentToHomeFragment()
+    fun goToHome(userId: String, newConnect: Boolean = false) {
+        connectUser(userId)
+        val direction =
+            LoginFragmentDirections.actionLoginFragmentToHomeFragment(userId, newConnect)
         navigationController.navigate(direction)
     }
+
+    private fun connectUser(userId: String) =
+        viewModelScope.launch { userRepository.setConnectUser(userId, true) }
 
     fun goToSubscribe() {
         val direction = LoginFragmentDirections.actionLoginFragmentToSubscribeFragment()

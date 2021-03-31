@@ -1,5 +1,6 @@
 package com.cinnamon.cleanexplorers.utils.extension
 
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -12,4 +13,9 @@ fun Date.getAge(): Int {
         age--
     }
     return age
+}
+
+fun Date.isNowadays(): Boolean {
+    val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    return formatter.format(this) == formatter.format(Date())
 }

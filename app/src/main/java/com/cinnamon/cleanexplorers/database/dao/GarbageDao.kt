@@ -11,7 +11,7 @@ interface GarbageDao {
     @Insert
     suspend fun insert(garbage: Garbage)
 
-    @Query("SELECT SUM(quantity) FROM garbage")
-     fun getAllGarbage(): Flow<Int>
+    @Query("SELECT SUM(quantity) FROM garbage WHERE userId=:userId")
+    fun getAllGarbage(userId: String): Flow<Int>
 
 }

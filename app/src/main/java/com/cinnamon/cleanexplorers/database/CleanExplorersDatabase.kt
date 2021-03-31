@@ -6,16 +6,23 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.cinnamon.cleanexplorers.database.dao.GarbageDao
+import com.cinnamon.cleanexplorers.database.dao.MissionDao
 import com.cinnamon.cleanexplorers.database.dao.UserDao
 import com.cinnamon.cleanexplorers.database.entity.Garbage
-import com.cinnamon.cleanexplorers.database.entity.LocalUser
+import com.cinnamon.cleanexplorers.database.entity.MissionEntity
+import com.cinnamon.cleanexplorers.database.entity.UserEntity
 import com.cinnamon.cleanexplorers.database.util.Converters
 
-@Database(entities = [LocalUser::class, Garbage::class], version = 1, exportSchema = false)
+@Database(
+    entities = [UserEntity::class, Garbage::class, MissionEntity::class],
+    version = 1,
+    exportSchema = false
+)
 @TypeConverters(Converters::class)
 abstract class CleanExplorersDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
-    abstract fun garbageDao():GarbageDao
+    abstract fun garbageDao(): GarbageDao
+    abstract fun missionDao(): MissionDao
 
     companion object {
         @Volatile

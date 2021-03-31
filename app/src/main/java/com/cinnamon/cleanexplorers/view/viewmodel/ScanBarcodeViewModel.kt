@@ -50,16 +50,18 @@ class ScanBarcodeViewModel(private val productRepository: ProductRepository) : V
         }
     }
 
-    fun insertGarbage(name: String, packaging: String, quantity: Int) = viewModelScope.launch {
-        productRepository.insertGarbage(
-            Garbage(
-                name = name,
-                packaging = packaging,
-                quantity = quantity,
-                createDate = Date(),
+    fun insertGarbage(name: String, packaging: String, quantity: Int, userId: String) =
+        viewModelScope.launch {
+            productRepository.insertGarbage(
+                Garbage(
+                    name = name,
+                    packaging = packaging,
+                    quantity = quantity,
+                    createDate = Date(),
+                    userId = userId
+                )
             )
-        )
-    }
+        }
 }
 
 

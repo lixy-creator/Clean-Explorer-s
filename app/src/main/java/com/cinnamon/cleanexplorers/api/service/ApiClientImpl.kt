@@ -26,7 +26,7 @@ class ApiClientImpl(var okHttpClient: OkHttpClient, isOpenApi:Boolean) : ApiClie
     }
 
     companion object {
-        private const val MY_API_BASE_URL= "https://cleanexplorers.jeprojet.com/script/"
-        private const val OFF_API_BASE_ULR="https://world.openfoodfacts.org/api/v0/"
+        private const val MY_API_BASE_URL = "https://cleanexplorers.hynity.com/script/"
+        private const val OFF_API_BASE_ULR = "https://world.openfoodfacts.org/api/v0/"
     }
 }

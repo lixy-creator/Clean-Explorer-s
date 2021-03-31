@@ -36,15 +36,20 @@ class RoutingFragment : Fragment() {
     }
 
     private fun redirectionManager() {
-        userViewModel.localUser.observe(viewLifecycleOwner) {
-            it?.let {
-                val direction = RoutingFragmentDirections.actionRoutingFragmentToHomeFragment()
+        userViewModel.userConnected.observe(viewLifecycleOwner) { user ->
+            if (user != null && user.connected) {
+                val direction =
+                    RoutingFragmentDirections.actionRoutingFragmentToHomeFragment(user.userId)
                 findNavController().navigate(direction)
-            } ?: run {
-                val direction = RoutingFragmentDirections.actionRoutingFragmentToLoginFragment()
-                findNavController().navigate(direction)
+            } else {
+                goToLogin()
             }
         }
+    }
+
+    private fun goToLogin() {
+        val direction = RoutingFragmentDirections.actionRoutingFragmentToLoginFragment()
+        findNavController().navigate(direction)
     }
 
 

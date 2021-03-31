@@ -25,6 +25,7 @@ class SubscribeFragment : Fragment() {
     private var _binding: FragmentSubscribeBinding? = null
     private val binding get() = _binding!!
 
+
     private val viewModel: SubscribeViewModel by viewModels {
         SubscribeViewModelFactory(
             (requireContext().applicationContext as CleanExplorersApplication).userRepository,
