@@ -1,7 +1,6 @@
 package com.cinnamon.cleanexplorers.view.fragment
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
@@ -331,7 +330,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveStart
             Manifest.permission.ACCESS_COARSE_LOCATION
         )
 
-    @SuppressLint("MissingPermission")
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
@@ -363,6 +361,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveStart
 
     override fun onResume() {
         super.onResume()
+        invokeLocationAction()
         binding.map.onResume()
     }
 
