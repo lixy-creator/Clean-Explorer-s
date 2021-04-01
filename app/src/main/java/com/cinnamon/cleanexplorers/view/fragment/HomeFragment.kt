@@ -2,7 +2,6 @@ package com.cinnamon.cleanexplorers.view.fragment
 
 import android.Manifest
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -31,6 +30,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 
 class HomeFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveStartedListener,
@@ -114,7 +114,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveStart
             if (newConnect && it < 7) {
                 viewModel.addPointUser(it)
                 newConnect = false
-                //TODO Animation
+                displayUpgradePoint(R.string.info_upgrade_connection, it)
             }
         }
         viewModel.getGarbageNbr().observe(viewLifecycleOwner) {
@@ -148,8 +148,17 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveStart
             if (!it.valid && number >= it.nbrTime) {
                 viewModel.validateMission(it.missionId)
                 viewModel.addPointUser(it.point)
+                displayUpgradePoint(R.string.info_upgrade_mission, it.point)
             }
         }
+    }
+
+    private fun displayUpgradePoint(textId: Int, point: Int) {
+        val content = binding.upgradeLayout
+        content.textUpgradeLabel.text = getString(textId)
+        content.textUpgradeInfo.text = getString(R.string.upgrade_point, point)
+        content.upgradeContent.isVisible = true
+        content.upgradeContent.postDelayed({ content.upgradeContent.isVisible = false }, 5000)
     }
 
     private fun addCleanStop() {
@@ -295,7 +304,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveStart
     }
 
     private fun getAlertDialog() {
-        AlertDialog.Builder(requireContext())
+        MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.error_location_title)
             .setMessage(
                 R.string.error_permission

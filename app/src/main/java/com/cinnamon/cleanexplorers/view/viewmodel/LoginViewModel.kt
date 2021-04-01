@@ -43,7 +43,7 @@ class LoginViewModel(private val userRepository: UserRepository, private val fra
 
     val userWantLogin = MutableLiveData<Pair<Boolean, UserEntity?>>()
 
-    fun isExistsUser(userId: String) = userRepository.isExistsUser(userId).asLiveData()
+    fun isExistsUser(userId: String) = userRepository.getUserLocal(userId).asLiveData()
 
     private fun checkUser(userEntity: UserEntity) {
         userWantLogin.postValue(Pair(true, userEntity))
