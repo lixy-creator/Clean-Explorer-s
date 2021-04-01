@@ -124,6 +124,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/ic_arrow_full_up"
+        android:padding="20dp"
         app:layout_constraintBottom_toTopOf="@+id/quantity_info"
         app:layout_constraintEnd_toEndOf="@+id/quantity_info"
         app:layout_constraintStart_toStartOf="@+id/quantity_info" />
@@ -132,6 +133,7 @@
         android:id="@+id/button_down_quantity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="20dp"
         android:background="@drawable/ic_arrow_full_down"
         app:layout_constraintEnd_toEndOf="@+id/quantity_info"
         app:layout_constraintStart_toStartOf="@+id/quantity_info"

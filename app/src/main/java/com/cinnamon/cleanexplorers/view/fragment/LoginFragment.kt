@@ -113,9 +113,9 @@ class LoginFragment : Fragment() {
         viewModel.userWantLogin.observe(viewLifecycleOwner) {
             if (it.first) {
                 val user = it.second ?: return@observe
-                viewModel.isExistsUser(user.userId).observe(viewLifecycleOwner) { isExists ->
-                    if (isExists)
-                        if (!user.lastConnexionDate.isNowadays()) {
+                viewModel.isExistsUser(user.userId).observe(viewLifecycleOwner) { userLocal ->
+                    if (userLocal != null)
+                        if (!userLocal.lastConnexionDate.isNowadays()) {
                             viewModel.setNbrConnexion(user.userId)
                             viewModel.goToHome(user.userId, true)
                         } else
