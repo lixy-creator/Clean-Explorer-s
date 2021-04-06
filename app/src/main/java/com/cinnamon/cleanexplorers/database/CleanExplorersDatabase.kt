@@ -15,7 +15,7 @@ import com.cinnamon.cleanexplorers.database.util.Converters
 
 @Database(
     entities = [UserEntity::class, Garbage::class, MissionEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -34,7 +34,9 @@ abstract class CleanExplorersDatabase : RoomDatabase() {
                     context.applicationContext,
                     CleanExplorersDatabase::class.java,
                     "clean_explorers_database"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
                 INSTANCE = instance
                 instance
             }

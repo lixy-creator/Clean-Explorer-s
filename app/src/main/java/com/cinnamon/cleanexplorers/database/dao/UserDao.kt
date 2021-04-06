@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.cinnamon.cleanexplorers.database.entity.UserEntity
 import kotlinx.coroutines.flow.Flow
+import java.util.*
 
 
 @Dao
@@ -35,8 +36,8 @@ interface UserDao {
     @Query("UPDATE user SET connected=:connected WHERE userId=:userId")
     suspend fun setConnectUser(userId: String, connected: Boolean)
 
-    @Query("UPDATE user SET connected=1, nbr_connexion=nbr_connexion+1, last_connexion_date=Date() WHERE userId=:userId")
-    suspend fun setNbrConnexion(userId: String)
+    @Query("UPDATE user SET connected=1, nbr_connexion=nbr_connexion+1, last_connexion_date=:date WHERE userId=:userId")
+    suspend fun setNbrConnexion(userId: String, date: Date)
 
     @Query("SELECT nbr_connexion FROM user WHERE userId=:userId")
     fun getNbrConnexion(userId: String): LiveData<Int>

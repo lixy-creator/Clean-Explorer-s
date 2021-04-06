@@ -12,6 +12,7 @@ import com.cinnamon.cleanexplorers.database.entity.UserEntity
 import kotlinx.coroutines.flow.Flow
 import okhttp3.OkHttpClient
 import retrofit2.HttpException
+import java.util.*
 
 class UserRepository(private val userDao: UserDao) {
 
@@ -84,7 +85,7 @@ class UserRepository(private val userDao: UserDao) {
     }
 
     suspend fun setNbrConnexion(userId: String) {
-        userDao.setNbrConnexion(userId)
+        userDao.setNbrConnexion(userId, Date())
     }
 
     suspend fun setNbrCleanStop(userId: String) {

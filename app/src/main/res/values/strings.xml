@@ -54,7 +54,7 @@
     <string name="info_age">%d ans</string>
     <string name="info_date_create">Inscrit depuis le : %s</string>
     <string name="info_upgrade_connection">Nouvelle connexion !</string>
-    <string name="info_upgrade_mission">Mission accompli !</string>
+    <string name="info_upgrade_mission">Mission accomplie !</string>
     <string name="upgrade_point">Vous avez gagné %d points</string>
 
 </resources>

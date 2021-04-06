@@ -128,7 +128,6 @@ class HomeViewModel(
             when (response) {
                 is Success -> {
                     val missions = response.value
-
                     missionRepository.insertMission(MapperMission().mapperList(missions, userId))
                 }
                 is Failure -> {

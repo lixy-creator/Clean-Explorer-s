@@ -6,6 +6,19 @@
     android:layout_height="match_parent"
     tools:context=".view.fragment.LoginFragment">
 
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollViewContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/connexion_button"
+            app:layout_constraintTop_toBottomOf="@+id/connexion_button">
+
             <ImageView
                 android:id="@+id/logo"
                 android:layout_width="match_parent"
@@ -166,6 +179,8 @@
                     android:textColor="@color/blue_light"
                     android:textStyle="bold" />
             </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <include
         android:id="@+id/loading_layout"
