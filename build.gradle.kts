@@ -7,13 +7,12 @@ buildscript {
     }
     dependencies {
         classpath(Android.tools.build.gradlePlugin)
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.30")
+        classpath(Kotlin.gradlePlugin)
         classpath(AndroidX.navigation.safeArgsGradlePlugin)
-        classpath("org.jetbrains.kotlin:kotlin-serialization:1.5.0-M1")
+        classpath("org.jetbrains.kotlin:kotlin-serialization:_")
 
         // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-
+        // in the individual module build.gradle.kts files
     }
 }
 
@@ -26,5 +25,6 @@ allprojects {
 }
 
 tasks.register<Delete>("clean").configure {
+    delete(rootProject.layout.buildDirectory)
     delete(rootProject.layout.buildDirectory.get())
 }

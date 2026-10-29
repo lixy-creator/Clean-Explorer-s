@@ -7,6 +7,7 @@ plugins {
     kotlin("kapt")
     kotlin("plugin.parcelize")
     kotlin("plugin.serialization")
+    id("androidx.navigation.safeargs.kotlin")
 }
 
 // Secrets live in local.properties / keystore.properties (both ignored by git)
@@ -28,16 +29,14 @@ val keystoreProperties = Properties().apply {
 //apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 
 android {
-    compileSdk = 34
-    //namespace = "com.cinnamon.cleanexplorers"
-    //  buildToolsVersion = "30.0.3"
+    namespace = App.appNamespace
+    compileSdk = App.compileSdk
 
     defaultConfig {
-        applicationId = "blooom.cinnamon.cleanexplorers"
-        minSdk = 21
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        applicationId = App.appApplicationId
+        minSdk = App.minSdk
+        versionCode = App.appVersionCode
+        versionName = App.appVersionName
 
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -68,6 +67,7 @@ android {
 
     buildTypes {
         named("release") {
+            isMinifyEnabled = false
             isMinifyEnabled = true
             isShrinkResources = true
             signingConfigs.findByName("release")?.let { signingConfig = it }
@@ -79,20 +79,29 @@ android {
             )
         }
         named("debug") {
+            versionNameSuffix = App.getDebugVersionNameSuffix(project)
             isMinifyEnabled = false
             isShrinkResources = false
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
 
     buildFeatures {
         viewBinding = true
+    }
+}
+
+kapt {
+    arguments {
+        arg("room.schemaLocation", "$projectDir/schemas")
+        arg("room.incremental", "true")
+        arg("room.expandProjection", "true")
     }
 }
 
@@ -103,8 +112,8 @@ dependencies {
     implementation(AndroidX.appCompat)
     implementation(Google.android.material)
     implementation(AndroidX.constraintLayout)
-    implementation("androidx.legacy:legacy-support-v4:1.0.0")
-    testImplementation("junit:junit:4.+")
+    implementation(Libs.legacy_support_v4)
+    testImplementation(Testing.junit4)
     androidTestImplementation(AndroidX.test.ext.junit)
     androidTestImplementation(AndroidX.test.espresso.core)
 
@@ -120,8 +129,8 @@ dependencies {
     implementation(Google.android.playServices.maps)
 
     //Facebook
-    implementation("com.facebook.android:facebook-android-sdk:9.0.0")
-    implementation("com.facebook.android:facebook-login:9.0.0")
+    implementation(Libs.facebook_sdk)
+    implementation(Libs.facebook_login)
 
     //Preferences
     implementation(AndroidX.preference.ktx)
@@ -154,10 +163,10 @@ dependencies {
     implementation(AndroidX.camera.view)
 
     //Glide
-    implementation("com.github.bumptech.glide:glide:4.12.0")
-    kapt("com.github.bumptech.glide:compiler:4.12.0")
+    implementation(Libs.glide)
+    kapt(Libs.glide_compiler)
 
     //Lottie
-    implementation("com.airbnb.android:lottie:3.4.0")
+    implementation(Libs.lottie)
 
 }
