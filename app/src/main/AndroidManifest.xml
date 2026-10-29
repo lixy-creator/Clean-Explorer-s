@@ -12,6 +12,7 @@
     <application
         android:name=".CleanExplorersApplication"
         android:allowBackup="false"
+        android:usesCleartextTraffic="false"
         android:fullBackupContent="false"
         android:icon="@mipmap/ic_clean_launcher"
         android:label="@string/app_name"
