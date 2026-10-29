@@ -1,0 +1,6 @@
+# Copy this file to local.properties (ignored by git) and fill in the values.
+# sdk.dir is set automatically by Android Studio.
+#sdk.dir=/path/to/Android/sdk
+
+# Google Maps SDK for Android key (restricted to package + SHA-1 in Google Cloud Console)
+MAPS_API_KEY=

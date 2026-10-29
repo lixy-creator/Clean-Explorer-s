@@ -12,7 +12,8 @@
 
     <application
         android:name=".CleanExplorersApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
+        android:fullBackupContent="false"
         android:icon="@mipmap/ic_clean_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_clean_launcher_round"
@@ -34,7 +35,7 @@
         </activity>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_map_key" />
+            android:value="${MAPS_API_KEY}" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
