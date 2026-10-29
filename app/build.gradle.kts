@@ -1,9 +1,26 @@
+import java.util.Properties
+
+
 plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("kapt")
     kotlin("plugin.parcelize")
     kotlin("plugin.serialization")
+}
+
+// Secrets live in local.properties / keystore.properties (both ignored by git)
+val localProperties = Properties().apply {
+    val file = rootProject.file("local.properties")
+    if (file.exists()) file.inputStream().use { load(it) }
+}
+val mapsApiKey: String = localProperties.getProperty("MAPS_API_KEY")
+    ?: System.getenv("MAPS_API_KEY")
+    ?: "".also { logger.warn("MAPS_API_KEY missing: add it to local.properties (see local.properties.example)") }
+
+val keystoreProperties = Properties().apply {
+    val file = rootProject.file("keystore.properties")
+    if (file.exists()) file.inputStream().use { load(it) }
 }
 
 //apply plugin: 'com.android.application'
@@ -25,6 +42,8 @@ android {
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
+        manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
+
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments += mapOf(
@@ -36,10 +55,22 @@ android {
         }
     }
 
+    signingConfigs {
+        if (!keystoreProperties.isEmpty) {
+            create("release") {
+                storeFile = rootProject.file(keystoreProperties.getProperty("storeFile"))
+                storePassword = keystoreProperties.getProperty("storePassword")
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
         named("release") {
-            isMinifyEnabled = false
-            isShrinkResources = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+            signingConfigs.findByName("release")?.let { signingConfig = it }
             setProguardFiles(
                 listOf(
                     getDefaultProguardFile("proguard-android-optimize.txt"),
