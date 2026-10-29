@@ -4,6 +4,7 @@ object App {
 
     const val minSdk = 21
     const val compileSdk = 35
+    const val targetSdk = 34
 
     const val appNamespace = "com.cinnamon.cleanexplorers"
     const val appApplicationId = "blooom.cinnamon.cleanexplorers"
